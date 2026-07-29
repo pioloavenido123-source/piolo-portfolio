@@ -3,11 +3,38 @@
 import http.server
 import json
 import os
+import threading
+import time
 import urllib.parse
 import urllib.request
 
 PORT = 9015
 DIR = os.path.dirname(os.path.abspath(__file__))
+
+# --- Conversation memory store ---
+# Maps session_id → { "messages": [...], "last_active": timestamp }
+MAX_HISTORY = 10          # max messages per session sent to LLM (keeps token usage low)
+SESSION_TTL = 1800       # 30 minutes of inactivity → session expires
+_conversations = {}
+_conv_lock = threading.Lock()
+
+
+def _prune_expired_sessions():
+    """Remove sessions that have been inactive longer than SESSION_TTL."""
+    now = time.time()
+    expired = [sid for sid, data in _conversations.items()
+               if now - data["last_active"] > SESSION_TTL]
+    for sid in expired:
+        del _conversations[sid]
+
+
+def _get_session_history(session_id):
+    """Return the message list for a session, creating it if new."""
+    with _conv_lock:
+        _prune_expired_sessions()
+        if session_id not in _conversations:
+            _conversations[session_id] = {"messages": [], "last_active": time.time()}
+        return _conversations[session_id]
 
 MAILGUN_URL = "https://api.mailgun.net/v3/betamaxgroup.tech/messages"
 MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY", "")
@@ -142,14 +169,27 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_json(400, {"error": "Message too long (500 char max)."})
             return
 
+        # Session-based conversation memory
+        session_id = data.get("session_id", "").strip()
+        if not session_id or len(session_id) > 128:
+            self.send_json(400, {"error": "Valid session_id is required."})
+            return
+
+        session = _get_session_history(session_id)
+        history = session["messages"]
+
+        # Build the messages array: system prompt + conversation history
+        messages = [{"role": "system", "content": CHATBOT_SYSTEM_PROMPT}]
+        # Include up to MAX_HISTORY recent messages (user + assistant turns)
+        recent = history[-MAX_HISTORY:] if len(history) > MAX_HISTORY else history
+        messages.extend(recent)
+        messages.append({"role": "user", "content": message})
+
         # Call LLM proxy
         try:
             payload = json.dumps({
                 "model": LLM_MODEL,
-                "messages": [
-                    {"role": "system", "content": CHATBOT_SYSTEM_PROMPT},
-                    {"role": "user", "content": message}
-                ],
+                "messages": messages,
                 "max_tokens": 150,
             }).encode("utf-8")
 
@@ -165,6 +205,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 result = json.loads(resp.read().decode("utf-8"))
 
             reply = result["choices"][0]["message"]["content"].strip()
+
+            # Save this exchange to conversation memory
+            with _conv_lock:
+                history.append({"role": "user", "content": message})
+                history.append({"role": "assistant", "content": reply})
+                session["last_active"] = time.time()
+
             self.send_json(200, {"reply": reply})
         except Exception as e:
             self.send_json(500, {"error": "I couldn't process that right now. Please try again or contact Piolo directly at piolo.avenido123@gmail.com."})
@@ -234,6 +281,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    server = http.server.HTTPServer(("127.0.0.1", PORT), Handler)
-    print(f"Serving portfolio on http://127.0.0.1:{PORT}")
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
+    print(f"Serving portfolio on http://127.0.0.1:{PORT} (threaded)")
     server.serve_forever()

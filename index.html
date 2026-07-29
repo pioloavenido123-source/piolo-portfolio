@@ -1343,6 +1343,13 @@ form.addEventListener('submit', async (e) => {
   const chatBadge = document.getElementById('chatBadge');
   let chatOpened = false;
 
+  // Session ID for conversation memory (persists across page reloads, unique per browser)
+  let chatSessionId = localStorage.getItem('piolobot_session_id');
+  if (!chatSessionId) {
+    chatSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 10);
+    localStorage.setItem('piolobot_session_id', chatSessionId);
+  }
+
   chatbotToggle.addEventListener('click', () => {
     chatbotToggle.classList.toggle('active');
     chatbotPanel.classList.toggle('active');
@@ -1458,7 +1465,7 @@ form.addEventListener('submit', async (e) => {
       const res = await fetch('/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ message: text, session_id: chatSessionId })
       });
       const data = await res.json();
 
