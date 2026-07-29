@@ -981,6 +981,24 @@ footer p a { color: var(--accent); text-decoration: none; }
         </div>
       </div>
 
+      <!-- Lead Enrichment Pipeline -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshot-leads.png?v=2" alt="Lead Enrichment Pipeline" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>Lead Enrichment Pipeline</h3>
+          <p>Enter a company website and AI automatically scrapes it, extracts business intelligence &mdash; industry, size, contacts, tech stack &mdash; and exports it as CSV or JSON.</p>
+          <button class="case-study-btn" onclick="openModal('leads')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <a href="https://leads.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">leads.betamaxgroup.tech &rarr;</a>
+
+          <p class="project-note">Solo project &mdash; web scraping / AI extraction / automation</p>
+        </div>
+      </div>
+
     </div>
 
     <div class="cert-banner reveal">
@@ -1263,6 +1281,20 @@ const caseStudies = {
       { h: 'Key Technical Decisions', p: 'System prompt engineering (the bot knows about all 8 projects, skills, education, and contact info &mdash; all in a single prompt). 300-token max response (keeps answers concise). 500-char input limit (prevents abuse). No external dependencies &mdash; the /chat endpoint uses only Python stdlib, no extra packages. Typing indicator for perceived responsiveness. Suggestion chips to guide visitor interaction.' },
       { h: 'Tech & Tools', p: '', tags: ['Python', 'deepseek-v4-flash', 'Ollama Cloud', 'LLM Integration', 'System Prompt Engineering', 'Chat Widget', 'Vanilla JS', 'Caddy', 'Cloudflare'] },
       { link: 'https://piolo.betamaxgroup.tech', linkText: 'Try it — click the chat icon' }
+    ]
+  },
+  leads: {
+    title: 'Lead Enrichment Pipeline',
+    role: 'Solo Developer & AI Engineer',
+    img: 'screenshot-leads.png?v=2',
+    sections: [
+      { h: 'The Problem', p: 'Sales and marketing teams spend hours manually researching prospects &mdash; visiting company websites, hunting for contact info, identifying decision-makers, and figuring out tech stack and target market. This is tedious, inconsistent, and doesn&rsquo;t scale. Existing tools like ZoomInfo and Clearbit are expensive and opaque &mdash; you can&rsquo;t see how they got the data or customize what&rsquo;s extracted.' },
+      { h: 'My Role', p: 'Solo developer. I built this as a personal project to demonstrate a practical AI automation pipeline &mdash; combining web scraping, LLM extraction, and structured data output. This directly reinforces the automation experience from my work at Relaytask, where I built n8n and GHL workflow automations for marketing operations.' },
+      { h: 'The Solution', p: 'A web app where you enter a company website URL, and the AI automatically scrapes the website, extracts structured business intelligence (industry, size, contacts, tech stack, value proposition, target market), and presents it as clean, exportable data cards. Results can be exported as CSV for CRM import or JSON for API integration.' },
+      { h: 'How It Works', p: 'User enters a company URL &rarr; FastAPI backend scrapes the website using httpx + BeautifulSoup (fetches HTML, removes noise, extracts text, finds emails and social links via regex) &rarr; cleaned text (max 8000 chars) is sent to deepseek-v4-flash with a B2B analyst system prompt &rarr; LLM returns structured JSON with 8 fields &rarr; backend merges scraped data with AI output &rarr; frontend renders as visual cards with CSV/JSON export.' },
+      { h: 'Key Technical Decisions', p: 'Server-side scraping with httpx instead of headless browser (faster, lighter, sufficient for most sites). Hybrid data collection &mdash; emails and social links extracted via both regex AND LLM, then merged. Structured JSON output from LLM with fallback parser for markdown-wrapped responses. 8000-char text truncation to balance extraction quality with LLM speed (5-6 seconds typical). In-memory search history (last 20 searches, no database needed).' },
+      { h: 'Tech & Tools', p: '', tags: ['Python', 'FastAPI', 'httpx', 'BeautifulSoup', 'deepseek-v4-flash', 'Ollama Cloud', 'Web Scraping', 'AI Extraction', 'CSV Export', 'Docker', 'Caddy'] },
+      { link: 'https://leads.betamaxgroup.tech', linkText: 'Try it — enter any company URL' }
     ]
   }
 };
