@@ -545,6 +545,8 @@ footer p a { color: var(--accent); text-decoration: none; }
 .chat-msg.typing { color: var(--text-dim); font-style: italic; }
 .chat-msg.typing::after { content: '...'; animation: typing-dots 1.4s infinite; }
 @keyframes typing-dots { 0%,20% { content: '.'; } 40% { content: '..'; } 60%,100% { content: '...'; } }
+.chat-msg a { color: var(--accent); text-decoration: underline; font-weight: 500; }
+.chat-msg a:hover { text-decoration: none; opacity: 0.8; }
 
 .chatbot-suggestions { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0 1.25rem 0.75rem; background: var(--bg); }
 .suggestion-chip {
@@ -630,7 +632,7 @@ footer p a { color: var(--accent); text-decoration: none; }
         <div class="hero-ctas reveal">
           <a href="#projects" class="btn-primary">View My Work</a>
           <a href="#contact" class="btn-secondary">Get in Touch</a>
-          <a href="resume.pdf" class="btn-secondary" download>Download Resume</a>
+          <a href="resume.pdf?v=1" class="btn-secondary" download>Download Resume</a>
         </div>
       </div>
       <div class="hero-photo-wrap reveal">
@@ -927,7 +929,7 @@ footer p a { color: var(--accent); text-decoration: none; }
             Case Study
           </button>
           <a href="https://resume.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">resume.betamaxgroup.tech &rarr;</a>
-          <a href="https://github.com/mark-cervantes/ai-resume-analyzer" class="project-link" target="_blank" rel="noopener" style="margin-left:0.75rem">View Source &rarr;</a>
+
           <p class="project-note">Solo project &mdash; AI engineering exercise</p>
         </div>
       </div>
@@ -945,7 +947,7 @@ footer p a { color: var(--accent); text-decoration: none; }
             Case Study
           </button>
           <a href="https://docqa.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">docqa.betamaxgroup.tech &rarr;</a>
-          <a href="https://github.com/mark-cervantes/ai-document-qa-rag" class="project-link" target="_blank" rel="noopener" style="margin-left:0.75rem">View Source &rarr;</a>
+
           <p class="project-note">Solo project &mdash; RAG / embeddings / vector search</p>
         </div>
       </div>
@@ -953,7 +955,7 @@ footer p a { color: var(--accent); text-decoration: none; }
       <!-- PioloBot Chatbot -->
       <div class="project-card">
         <div class="project-thumb-wrap">
-          <img class="project-thumb" src="screenshot-piolobot.png?v=1" alt="PioloBot AI Chatbot" loading="lazy">
+          <img class="project-thumb" src="screenshot-piolobot.png?v=2" alt="PioloBot AI Chatbot" loading="lazy">
         </div>
         <div class="project-body">
           <h3>PioloBot &mdash; AI Chatbot</h3>
@@ -963,7 +965,7 @@ footer p a { color: var(--accent); text-decoration: none; }
             Case Study
           </button>
           <a href="https://piolo.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">Try it &mdash; click the chat icon &rarr;</a>
-          <a href="https://github.com/mark-cervantes/piolobot-chatbot" class="project-link" target="_blank" rel="noopener" style="margin-left:0.75rem">View Source &rarr;</a>
+
           <p class="project-note">Solo project &mdash; LLM integration / chat widget</p>
         </div>
       </div>
@@ -993,7 +995,7 @@ footer p a { color: var(--accent); text-decoration: none; }
         <p>Whether you need a funnel website, an automation workflow, or help with an AI project &mdash; I'd love to hear from you.</p>
         <div class="contact-methods">
           <a href="mailto:piolo.avenido123@gmail.com" class="contact-method">
-            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
             piolo.avenido123@gmail.com
           </a>
           <a href="https://www.linkedin.com/in/piolo-rafael-avenido-3324333b3/" class="contact-method" target="_blank" rel="noopener">
@@ -1241,7 +1243,7 @@ const caseStudies = {
   piolobot: {
     title: 'PioloBot — AI Chatbot',
     role: 'Solo Developer & AI Engineer',
-    img: 'screenshot-piolobot.png?v=1',
+    img: 'screenshot-piolobot.png?v=2',
     sections: [
       { h: 'The Problem', p: 'Portfolio visitors typically just scan a page and leave. There was no interactive way for them to ask questions about my skills, projects, or experience in natural language. A static page can&rsquo;t answer &ldquo;What AI projects has Piolo built?&rdquo; or &ldquo;Does he know Python?&rdquo; &mdash; visitors have to read through everything to find what they need.' },
       { h: 'My Role', p: 'Solo developer. I built PioloBot as both a portfolio enhancement and a real AI integration exercise. I designed the system prompt that gives the bot knowledge about my background, built the /chat API endpoint into the portfolio server, and created the chat widget UI that matches the portfolio&rsquo;s dark glassmorphism design.' },
@@ -1342,10 +1344,47 @@ form.addEventListener('submit', async (e) => {
     }
   });
 
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function sanitizeChatHtml(text) {
+    // Escape everything first
+    let html = escapeHtml(text);
+    // Re-enable <a href="...">...</a> tags that the LLM produces
+    html = html.replace(/&lt;a\s+href="([^"]+)"\s*(?:target="_blank"\s*)?&gt;([\s\S]*?)&lt;\/a&gt;/gi,
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$2</a>');
+    // Also handle markdown-style links [text](url) as fallback
+    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/gi,
+      '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    // Strip any remaining markdown symbols that the LLM might emit
+    // Remove bold/italic markers
+    html = html.replace(/\*\*(.+?)\*\*/g, '$1');
+    html = html.replace(/\*(.+?)\*/g, '$1');
+    html = html.replace(/__(.+?)__/g, '$1');
+    // Remove backtick code wrappers
+    html = html.replace(/`([^`]+)`/g, '$1');
+    // Remove hash headers
+    html = html.replace(/^#{1,6}\s+/gm, '');
+    // Remove leading dashes/bullets from lines
+    html = html.replace(/^[\s]*[-•]\s+/gm, '');
+    // Remove horizontal rules
+    html = html.replace(/^[\s]*[-=*_]{3,}[\s]*$/gm, '');
+    return html;
+  }
+
   function appendMessage(text, sender) {
     const msg = document.createElement('div');
     msg.className = 'chat-msg ' + sender;
-    msg.textContent = text;
+    if (sender === 'bot') {
+      // Bot messages may contain <a> tags from the LLM — sanitize and render
+      msg.innerHTML = sanitizeChatHtml(text);
+    } else {
+      // User messages are always plain text
+      msg.textContent = text;
+    }
     chatbotMessages.appendChild(msg);
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
     return msg;
