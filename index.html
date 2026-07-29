@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piolo Rafael Avenido — Freelancer & AI Engineer</title>
+<meta name="description" content="Portfolio of Piolo Rafael Avenido — Freelancer, AI engineer, and automation specialist. BS in Information Technology.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== THEME VARIABLES ===== */
+:root {
+  --bg: #0F172A;
+  --bg-soft: #1E293B;
+  --surface: rgba(30, 41, 59, 0.6);
+  --surface-solid: #1E293B;
+  --border: rgba(148, 163, 184, 0.15);
+  --primary: #3B82F6;
+  --accent: #06B7D4;
+  --text: #F1F5F9;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+  --radius: 16px;
+  --space: 1rem;
+  --blob-opacity: 0.12;
+  --nav-bg: rgba(15, 23, 42, 0.7);
+}
+[data-theme="light"] {
+  --bg: #F8FAFC;
+  --bg-soft: #E2E8F0;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-solid: #FFFFFF;
+  --border: rgba(100, 116, 139, 0.2);
+  --primary: #2563EB;
+  --accent: #0891B2;
+  --text: #0F172A;
+  --text-muted: #475569;
+  --text-dim: #64748B;
+  --blob-opacity: 0.07;
+  --nav-bg: rgba(248, 250, 252, 0.8);
+}
+[data-theme="light"] .hero h1,
+[data-theme="light"] .hero .subtitle,
+[data-theme="light"] .hero .bio,
+[data-theme="light"] .section-title,
+[data-theme="light"] .about-card p { filter: none; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ===== SCROLL PROGRESS BAR ===== */
+.scroll-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+  background: linear-gradient(90deg, var(--primary), var(--accent), #8B5CF6);
+  z-index: 200; transition: width 0.1s ease;
+}
+
+/* ===== BACKGROUND BLOBS ===== */
+.bg-blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(140px); opacity: var(--blob-opacity); transition: opacity 0.4s ease; }
+.blob-1 { width: 500px; height: 500px; background: var(--primary); top: -100px; left: -100px; animation: float1 18s ease-in-out infinite; }
+.blob-2 { width: 400px; height: 400px; background: var(--accent); bottom: 10%; right: -80px; animation: float2 22s ease-in-out infinite; }
+.blob-3 { width: 350px; height: 350px; background: #8B5CF6; top: 40%; left: 50%; animation: float3 20s ease-in-out infinite; }
+@keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(60px,40px)} }
+@keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,-30px)} }
+@keyframes float3 { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-30%,-70%)} }
+
+/* ===== NAV ===== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 2rem;
+  transition: background 0.4s ease;
+}
+@media (max-width: 600px) { nav { padding: 0.6rem 1rem; } }
+.nav-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.nav-logo { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 1.75rem; align-items: center; }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-right { display: flex; gap: 1rem; align-items: center; }
+.nav-cta {
+  background: var(--primary); color: white; padding: 0.5rem 1.25rem;
+  border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+.nav-cta:hover { background: #2563EB; transform: translateY(-1px); }
+
+/* Theme toggle */
+.theme-toggle {
+  background: var(--surface); border: 1px solid var(--border);
+  width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, transform 0.2s; color: var(--text);
+}
+.theme-toggle:hover { border-color: var(--accent); transform: scale(1.05); }
+.theme-toggle svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+.theme-toggle .sun { display: none; }
+[data-theme="light"] .theme-toggle .sun { display: block; }
+[data-theme="light"] .theme-toggle .moon { display: none; }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .nav-mobile-btn {
+    display: inline-flex; background: var(--surface); border: 1px solid var(--border);
+    width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+    align-items: center; justify-content: center; color: var(--text);
+  }
+  .nav-mobile-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .nav-links.mobile-open {
+    display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0;
+    background: var(--surface-solid); border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem; gap: 1.25rem; z-index: 99; backdrop-filter: blur(16px);
+  }
+  .nav-links.mobile-open a { font-size: 1rem; }
+}
+.nav-mobile-btn { display: none; }
+
+/* ===== CONTAINER ===== */
+.container { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem; }
+@media (max-width: 600px) { .container { padding: 0 1rem; } }
+
+/* ===== HERO ===== */
+.hero { padding: 7rem 0 2rem; }
+.hero-inner { display: flex; align-items: center; gap: 3rem; }
+@media (max-width: 768px) { .hero-inner { flex-direction: column-reverse; text-align: center; gap: 2rem; } }
+@media (max-width: 480px) { .hero-inner { gap: 1.5rem; } }
+.hero-content { flex: 1; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25);
+  color: var(--accent); padding: 0.4rem 1rem; border-radius: 50px;
+  font-size: 0.8rem; font-weight: 500; margin-bottom: 1.5rem;
+}
+.hero-badge::before { content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700; line-height: 1.1; margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--text) 0%, var(--primary) 50%, var(--accent) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+.hero .subtitle { font-size: clamp(1.05rem, 2.5vw, 1.35rem); color: var(--text-muted); font-weight: 400; margin-bottom: 1.5rem; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.3)); }
+.hero .bio { max-width: 520px; color: var(--text-dim); font-size: 1rem; line-height: 1.7; margin-bottom: 2rem; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.3)); }
+@media (max-width: 768px) { .hero .bio { margin-left: auto; margin-right: auto; } }
+.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+@media (max-width: 768px) { .hero-ctas { justify-content: center; } }
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; padding: 0.875rem 2rem; border-radius: 10px; text-decoration: none;
+  font-weight: 600; font-size: 1rem; transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4); }
+.btn-secondary {
+  background: var(--surface); color: var(--text); padding: 0.875rem 2rem;
+  border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 1rem;
+  border: 1px solid var(--border); transition: border-color 0.2s, transform 0.2s;
+  min-height: 48px; display: inline-flex; align-items: center;
+}
+.btn-secondary:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+/* ===== PROFILE PHOTO ===== */
+.hero-photo-wrap { position: relative; flex-shrink: 0; }
+.hero-photo {
+  width: 240px; height: 240px; border-radius: 50%;
+  object-fit: cover; display: block;
+  border: 3px solid rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 60px rgba(59, 130, 246, 0.25), 0 0 120px rgba(6, 182, 212, 0.15);
+}
+.hero-photo-ring {
+  position: absolute; inset: -8px; border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--primary), var(--accent), #8B5CF6, var(--primary));
+  z-index: -1; animation: spin 8s linear infinite; opacity: 0.5;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 768px) { .hero-photo { width: 180px; height: 180px; } }
+
+/* ===== STATS COUNTER ===== */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  padding: 2rem 0 0;
+  margin: 0;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.stat-box {
+  text-align: center;
+  padding: 1rem 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+.stat-box .num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem); font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.stat-box .label { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem; }
+@media (max-width: 600px) {
+  .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .stat-box { padding: 0.875rem 0.5rem; }
+  .stat-box .label { font-size: 0.75rem; }
+}
+
+/* ===== SECTION ===== */
+section { padding: 3.5rem 0; }
+.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2)); }
+@media (max-width: 600px) { .section-title { font-size: 1.6rem; } }
+.section-subtitle { color: var(--text-dim); margin-bottom: 2rem; font-size: 1rem; }
+.section-line { width: 48px; height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 2px; margin-bottom: 1.5rem; }
+
+/* ===== ABOUT ===== */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; }
+@media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+.about-card {
+  background: var(--surface); backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem;
+}
+@media (max-width: 600px) { .about-card { padding: 1.5rem; } }
+.about-card p { color: var(--text-muted); margin-bottom: 1rem; font-size: 1rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15)); }
+.about-card p:last-child { margin-bottom: 0; }
+.about-info { display: flex; flex-direction: column; gap: 1rem; }
+.info-item { display: flex; align-items: center; gap: 1rem; }
+.info-icon {
+  width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.info-icon svg { width: 24px; height: 24px; stroke: var(--primary); fill: none; stroke-width: 2; }
+.info-item .info-num { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; }
+.info-item .info-label { font-size: 0.85rem; color: var(--text-dim); }
+
+/* ===== SKILLS ===== */
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+@media (max-width: 600px) { .skills-grid { grid-template-columns: 1fr; gap: 1rem; } }
+.skill-category {
+  background: var(--surface); backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem;
+}
+.skill-category h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 600; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+.skill-cat-icon { width: 28px; height: 28px; stroke: var(--accent); fill: none; stroke-width: 2; }
+.skill-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.skill-tag {
+  background: rgba(148, 163, 184, 0.08); border: 1px solid var(--border);
+  color: var(--text-muted); padding: 0.4rem 0.9rem; border-radius: 8px;
+  font-size: 0.85rem; font-weight: 500; transition: all 0.2s;
+}
+.skill-tag:hover { border-color: var(--primary); color: var(--text); background: rgba(59, 130, 246, 0.1); }
+
+/* ===== CAPSTONE ===== */
+.capstone-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(6, 182, 212, 0.06), rgba(139, 92, 246, 0.06));
+  border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius);
+  padding: 0; overflow: hidden; margin-bottom: 3rem;
+}
+.capstone-header {
+  display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.75rem;
+  background: rgba(59, 130, 246, 0.1); border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+}
+.capstone-badge {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; padding: 0.25rem 0.75rem; border-radius: 6px;
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.capstone-header span { color: var(--text-muted); font-size: 0.9rem; }
+.capstone-body { padding: 1.75rem; }
+.capstone-body h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 600; margin-bottom: 0.5rem; }
+.capstone-role { color: var(--accent); font-size: 0.9rem; font-weight: 500; margin-bottom: 1rem; }
+.capstone-body p { color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem; }
+.capstone-body p:last-child { margin-bottom: 0; }
+.capstone-features { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.capstone-feature {
+  background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.15);
+  color: var(--text-muted); padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem;
+}
+
+/* ===== PROJECTS ===== */
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+@media (max-width: 600px) { .projects-grid { grid-template-columns: 1fr; gap: 1.25rem; } }
+.project-card {
+  background: var(--surface); backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 0;
+  transition: transform 0.3s, border-color 0.3s; position: relative; overflow: hidden;
+}
+.project-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0; transition: opacity 0.3s; z-index: 2;
+}
+.project-card:hover { transform: translateY(-4px); border-color: rgba(59, 130, 246, 0.3); }
+.project-card:hover::before { opacity: 1; }
+.project-thumb {
+  width: 100%; height: 180px; object-fit: cover; display: block;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft); transition: transform 0.4s;
+}
+.project-card:hover .project-thumb { transform: scale(1.05); }
+.project-thumb-wrap { overflow: hidden; position: relative; }
+.project-thumb-wrap::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 60%, rgba(15, 23, 42, 0.5));
+  pointer-events: none;
+}
+.project-body { padding: 1.5rem 1.75rem 1.75rem; }
+.project-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
+.project-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.75rem; }
+.project-link { color: var(--accent); font-size: 0.85rem; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.project-link:hover { color: var(--primary); }
+.project-note { font-size: 0.8rem; color: var(--text-dim); font-style: italic; margin-top: 0.5rem; }
+
+/* ===== CASE STUDY MODAL ===== */
+.case-study-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2);
+  color: var(--accent); padding: 0.4rem 1rem; border-radius: 8px;
+  font-size: 0.8rem; font-weight: 500; cursor: pointer;
+  transition: all 0.2s; margin-top: 0.5rem;
+}
+.case-study-btn:hover { background: rgba(59, 130, 246, 0.2); border-color: var(--accent); }
+.case-study-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center;
+  padding: 2rem; opacity: 0; transition: opacity 0.3s ease;
+}
+.modal-overlay.active { display: flex; opacity: 1; }
+.modal {
+  background: var(--surface-solid); border: 1px solid var(--border);
+  border-radius: 20px; max-width: 640px; width: 100%; max-height: 85vh;
+  overflow-y: auto; padding: 2.5rem; position: relative;
+  transform: scale(0.95); transition: transform 0.3s ease;
+}
+@media (max-width: 600px) {
+  .modal { padding: 1.5rem; border-radius: 16px; max-height: 90vh; }
+  .modal-overlay { padding: 1rem; }
+  .modal h3 { font-size: 1.25rem; }
+  .modal .modal-section h4 { font-size: 0.95rem; }
+  .modal .modal-section p { font-size: 0.9rem; }
+}
+.modal-overlay.active .modal { transform: scale(1); }
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { border-color: var(--accent); color: var(--accent); }
+.modal h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; padding-right: 2rem; }
+.modal .modal-role { color: var(--accent); font-size: 0.9rem; font-weight: 500; margin-bottom: 1.5rem; }
+.modal .modal-img { width: 100%; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid var(--border); }
+.modal .modal-section { margin-bottom: 1.5rem; }
+.modal .modal-section h4 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+.modal .modal-section p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; }
+.modal .modal-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.modal .modal-tag {
+  background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.15);
+  color: var(--text-muted); padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.8rem;
+}
+.modal .modal-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.9rem;
+  margin-top: 0.5rem; transition: color 0.2s;
+}
+.modal .modal-link:hover { color: var(--primary); }
+
+/* ===== CERTIFICATES ===== */
+.cert-banner {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(6, 182, 212, 0.08));
+  border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius);
+  padding: 2rem; text-align: center; margin-top: 2rem;
+}
+.cert-banner h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; margin-bottom: 0.5rem; }
+.cert-banner p { color: var(--text-muted); margin-bottom: 1.25rem; }
+.cert-link {
+  display: inline-flex; align-items: center; gap: 0.5rem; color: var(--accent);
+  text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.2s;
+}
+.cert-link:hover { color: var(--primary); }
+.cert-link svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* ===== CONTACT FORM ===== */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
+@media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+.contact-info h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+.contact-info p { color: var(--text-muted); margin-bottom: 2rem; }
+.contact-methods { display: flex; flex-direction: column; gap: 1rem; }
+.contact-method {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem; border-radius: 10px; text-decoration: none;
+  color: var(--text); font-weight: 500; font-size: 0.95rem;
+  transition: all 0.2s; min-height: 48px;
+}
+.contact-method:hover { border-color: var(--accent); background: rgba(6, 182, 212, 0.08); transform: translateY(-2px); }
+.contact-method svg { width: 22px; height: 22px; fill: currentColor; }
+
+.contact-form {
+  background: var(--surface); backdrop-filter: blur(16px);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 2rem;
+}
+.form-group { margin-bottom: 1.25rem; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.4rem; }
+.form-group input, .form-group textarea {
+  width: 100%; background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.75rem 1rem; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 0.95rem;
+  transition: border-color 0.2s; outline: none;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+.form-group textarea { resize: vertical; min-height: 120px; }
+.form-btn {
+  width: 100%; background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white; border: none; padding: 0.875rem; border-radius: 10px;
+  font-weight: 600; font-size: 1rem; cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s; min-height: 48px;
+}
+.form-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4); }
+.form-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.form-status {
+  margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 8px;
+  font-size: 0.9rem; display: none;
+}
+.form-status.success { display: block; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); color: var(--accent); }
+.form-status.error { display: block; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #EF4444; }
+
+/* ===== FOOTER ===== */
+footer { padding: 2.5rem 0; border-top: 1px solid var(--border); text-align: center; }
+footer p { color: var(--text-dim); font-size: 0.85rem; }
+footer p a { color: var(--accent); text-decoration: none; }
+
+/* ===== SCROLL REVEAL ===== */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-stagger > * { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal-stagger.visible > * { opacity: 1; transform: translateY(0); }
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 60ms; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 120ms; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 180ms; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 240ms; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 300ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .blob { animation: none; }
+  .hero-photo-ring { animation: none; }
+  .hero-badge::before { animation: none; }
+  .reveal, .reveal-stagger > * { opacity: 1; transform: none; transition: none; }
+  .project-card:hover .project-thumb { transform: none; }
+}
+*:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ===== CHATBOT WIDGET ===== */
+.chatbot-toggle {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 250;
+  width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  color: white;
+}
+.chatbot-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(59, 130, 246, 0.5); }
+.chatbot-toggle svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 2; }
+.chatbot-toggle .close-icon { display: none; }
+.chatbot-toggle.active .chat-icon { display: none; }
+.chatbot-toggle.active .close-icon { display: block; }
+.chatbot-toggle .badge-dot {
+  position: absolute; top: -2px; right: -2px; width: 14px; height: 14px;
+  background: #EF4444; border-radius: 50%; border: 2px solid var(--bg);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.chatbot-panel {
+  position: fixed; bottom: 5.5rem; right: 1.5rem; z-index: 251;
+  width: 380px; max-width: calc(100vw - 3rem); max-height: 520px;
+  background: var(--surface-solid); border: 1px solid var(--border);
+  border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  display: none; flex-direction: column; overflow: hidden;
+  transform: translateY(20px) scale(0.95); opacity: 0;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.chatbot-panel.active { display: flex; transform: translateY(0) scale(1); opacity: 1; }
+@media (max-width: 480px) {
+  .chatbot-panel { bottom: 5rem; right: 0.75rem; width: calc(100vw - 1.5rem); max-height: 60vh; }
+  .chatbot-toggle { bottom: 1rem; right: 1rem; }
+}
+
+.chatbot-header {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem;
+  color: white;
+}
+.chatbot-avatar {
+  width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.chatbot-avatar svg { width: 22px; height: 22px; stroke: white; fill: none; stroke-width: 2; }
+.chatbot-header-info h4 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; margin: 0; }
+.chatbot-header-info p { font-size: 0.75rem; opacity: 0.85; margin: 0; display: flex; align-items: center; gap: 0.3rem; }
+.chatbot-header-info .status-dot { width: 7px; height: 7px; background: #4ADE80; border-radius: 50%; }
+
+.chatbot-messages {
+  flex: 1; overflow-y: auto; padding: 1.25rem; display: flex;
+  flex-direction: column; gap: 0.75rem; background: var(--bg);
+  min-height: 200px;
+}
+.chatbot-messages::-webkit-scrollbar { width: 4px; }
+.chatbot-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.chat-msg { max-width: 85%; padding: 0.7rem 1rem; border-radius: 14px; font-size: 0.88rem; line-height: 1.5; word-wrap: break-word; }
+.chat-msg.bot {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  align-self: flex-start; border-bottom-left-radius: 4px;
+}
+.chat-msg.user {
+  background: linear-gradient(135deg, var(--primary), var(--accent)); color: white;
+  align-self: flex-end; border-bottom-right-radius: 4px;
+}
+.chat-msg.typing { color: var(--text-dim); font-style: italic; }
+.chat-msg.typing::after { content: '...'; animation: typing-dots 1.4s infinite; }
+@keyframes typing-dots { 0%,20% { content: '.'; } 40% { content: '..'; } 60%,100% { content: '...'; } }
+
+.chatbot-suggestions { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0 1.25rem 0.75rem; background: var(--bg); }
+.suggestion-chip {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
+  padding: 0.35rem 0.75rem; border-radius: 16px; font-size: 0.78rem; cursor: pointer;
+  transition: all 0.2s;
+}
+.suggestion-chip:hover { border-color: var(--accent); color: var(--accent); background: rgba(6,182,212,0.08); }
+
+.chatbot-input-wrap {
+  display: flex; gap: 0.5rem; padding: 0.75rem; background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+.chatbot-input {
+  flex: 1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.65rem 0.85rem; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 0.88rem; outline: none;
+  transition: border-color 0.2s;
+}
+.chatbot-input:focus { border-color: var(--accent); }
+.chatbot-send {
+  width: 40px; height: 40px; border-radius: 10px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--primary), var(--accent)); color: white;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.chatbot-send:hover { transform: scale(1.05); }
+.chatbot-send svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+.chatbot-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- Background blobs -->
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo">Piolo<span>.</span>AV</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#capstone">Capstone</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <a href="#contact" class="nav-cta">Get in Touch</a>
+      <button class="nav-mobile-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="home">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge reveal">Available for freelance work</div>
+        <h1 class="reveal">Piolo Rafael Avenido</h1>
+        <p class="subtitle reveal">Freelancer &amp; AI Engineer</p>
+        <p class="bio reveal">
+          I build AI-powered applications &mdash; LLM integration, retrieval-augmented
+          generation (RAG), and intelligent automation. I hold a BS in Information Technology
+          and have hands-on experience deploying production AI apps, from PDF text extraction
+          and embeddings to vector search and prompt engineering.
+        </p>
+        <div class="hero-ctas reveal">
+          <a href="#projects" class="btn-primary">View My Work</a>
+          <a href="#contact" class="btn-secondary">Get in Touch</a>
+          <a href="resume.pdf" class="btn-secondary" download>Download Resume</a>
+        </div>
+      </div>
+      <div class="hero-photo-wrap reveal">
+        <div class="hero-photo-ring"></div>
+        <img class="hero-photo" src="profile.jpg?v=3" alt="Piolo Rafael Avenido" loading="eager">
+      </div>
+    </div>
+
+    <!-- Stats counter -->
+    <div class="stats-bar reveal">
+      <div class="stat-box">
+        <div class="num" data-count="8" data-suffix="+">0</div>
+        <div class="label">Projects Built</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" data-count="3" data-suffix="+">0</div>
+        <div class="label">Years Experience</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" data-count="10" data-suffix="+">0</div>
+        <div class="label">Certifications</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" data-count="1" data-suffix="">0</div>
+        <div class="label">Capstone Led</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-line reveal"></div>
+    <h2 class="section-title reveal">About Me</h2>
+    <p class="section-subtitle reveal">A bit about my background and what drives me</p>
+    <div class="about-grid">
+      <div class="about-card reveal">
+        <p>
+          I'm a recent graduate with a Bachelor of Science in Information Technology
+          degree, based in the Philippines. My professional journey started in
+          front-end development, building high-converting funnel websites, and has
+          since expanded into AI engineering &mdash; building production AI applications
+          with LLM integration, retrieval-augmented generation (RAG), and vector search.
+        </p>
+        <p>
+          I've built and deployed 3 solo AI apps: a resume analyzer that scores resumes
+          against job descriptions, a document Q&amp;A tool that uses RAG to answer
+          questions from any PDF with source citations, and an AI chatbot embedded on
+          this portfolio. Whether it's building intelligent systems, setting up n8n
+          automation pipelines, or developing web applications, I enjoy turning complex
+          problems into clean, working solutions.
+        </p>
+        <p>
+          I'm currently freelancing while pursuing opportunities in AI engineering,
+          and I'm always looking for new challenges that let me combine
+          automation, web development, and intelligent systems.
+        </p>
+      </div>
+      <div class="about-info reveal-stagger">
+        <div class="info-item">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.42a5 5 0 0 1-2.16 5.42L12 18l-4.16-2a5 5 0 0 1-2.16-5.42L12 14z"/></svg>
+          </div>
+          <div>
+            <div class="info-num">BS IT</div>
+            <div class="info-label">Bachelor of Science in Information Technology</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          </div>
+          <div>
+            <div class="info-num">3</div>
+            <div class="info-label">Solo AI projects built &amp; deployed</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div>
+            <div class="info-num">AI + Automation</div>
+            <div class="info-label">Core focus area</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-line reveal"></div>
+    <h2 class="section-title reveal">Skills &amp; Expertise</h2>
+    <p class="section-subtitle reveal">Tools and technologies I work with</p>
+    <div class="skills-grid reveal-stagger">
+      <div class="skill-category">
+        <h3>
+          <svg class="skill-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
+          Programming
+        </h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">FastAPI</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">React</span>
+          <span class="skill-tag">Next.js</span>
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">Java</span>
+          <span class="skill-tag">PHP</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">MySQL</span>
+          <span class="skill-tag">HTML/CSS</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>
+          <svg class="skill-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          Automation &amp; AI
+        </h3>
+        <div class="skill-tags">
+          <span class="skill-tag">LLM Integration</span>
+          <span class="skill-tag">Prompt Engineering</span>
+          <span class="skill-tag">RAG (Retrieval-Augmented Generation)</span>
+          <span class="skill-tag">Embeddings &amp; Vector Search</span>
+          <span class="skill-tag">n8n Automation</span>
+          <span class="skill-tag">Workflow Automation</span>
+          <span class="skill-tag">Docker &amp; Deployment</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>
+          <svg class="skill-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Web &amp; CRM
+        </h3>
+        <div class="skill-tags">
+          <span class="skill-tag">WordPress (Elementor)</span>
+          <span class="skill-tag">WordPress (WP Bakery)</span>
+          <span class="skill-tag">GHL Funnel Building</span>
+          <span class="skill-tag">Salesforce Administration</span>
+          <span class="skill-tag">Caddy &amp; Cloudflare</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPSTONE -->
+<section id="capstone">
+  <div class="container">
+    <div class="section-line reveal"></div>
+    <h2 class="section-title reveal">Capstone Project</h2>
+    <p class="section-subtitle reveal">Spearheaded as Project Manager during my BS IT capstone</p>
+    <div class="capstone-card reveal">
+      <div class="capstone-header">
+        <span class="capstone-badge">Capstone</span>
+        <span>Project Manager &mdash; BS Information Technology</span>
+      </div>
+      <div class="capstone-body">
+        <h3>Web-Based POS System</h3>
+        <div class="capstone-role">Role: Project Manager &mdash; BS Information Technology</div>
+        <p>
+          Spearheaded the development of a web-based point-of-sale system accessible through
+          any device's browser. The system smoothens administrative operations, transactions,
+          inventory management, rewards and redemptions, and handles multi-branch management
+          &mdash; allowing owners and admins to monitor revenue, billing of materials (inventory
+          items), account status, and shifting schedules across all branches from a single
+          interface.
+        </p>
+        <p>
+          As Project Manager, I led the team through the full software development lifecycle
+          &mdash; from requirements gathering and planning to implementation, testing, and final
+          defense. I managed task delegation, timelines, and coordination between team members
+          to ensure deliverables met both academic and technical standards.
+        </p>
+        <div class="capstone-features">
+          <span class="capstone-feature">Multi-branch management</span>
+          <span class="capstone-feature">Inventory &amp; BOM tracking</span>
+          <span class="capstone-feature">Rewards &amp; redemptions</span>
+          <span class="capstone-feature">Revenue monitoring</span>
+          <span class="capstone-feature">Account status</span>
+          <span class="capstone-feature">Shifting schedules</span>
+          <span class="capstone-feature">Cross-device accessible</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-line reveal"></div>
+    <h2 class="section-title reveal">Projects</h2>
+    <p class="section-subtitle reveal">Things I've built and collaborated on &mdash; click "Case Study" for details</p>
+    <div class="projects-grid reveal-stagger">
+
+      <!-- Zimmy POS -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshots/zimmy-pos.png?v=3" alt="Zimmy POS interface" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>Zimmy POS</h3>
+          <p>Web-based point-of-sale system with a built-in redemption feature. Full e-commerce flow including inventory, transactions, and customer rewards.</p>
+          <button class="case-study-btn" onclick="openModal('zimmy')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <p class="project-note">Collaborative team project</p>
+        </div>
+      </div>
+
+      <!-- n8n -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshots/n8n-automation.png?v=3" alt="n8n automation workflow" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>n8n Automation Workflows</h3>
+          <p>Custom automation workflows built in n8n to streamline business processes, connect APIs, and reduce manual workloads across various tasks.</p>
+          <button class="case-study-btn" onclick="openModal('n8n')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <p class="project-note">Collaborative team project</p>
+        </div>
+      </div>
+
+      <!-- Relay Task -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshots/relaytask.png?v=3" alt="Relay Task website" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>Relay Task</h3>
+          <p>A funnel website for a real company offering Virtual Assistant services. Built the front-end and conversion-focused layout alongside the team.</p>
+          <button class="case-study-btn" onclick="openModal('relaytask')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <a href="https://relaytask.com" class="project-link" target="_blank" rel="noopener">relaytask.com &rarr;</a>
+          <p class="project-note">Collaborative team project</p>
+        </div>
+      </div>
+
+      <!-- Deskline -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshots/deskline.png?v=3" alt="Deskline.co chatbot platform" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>Deskline.co</h3>
+          <p>A web chatbot SaaS platform. Worked on the chatbot interface and integration, helping businesses automate customer support conversations.</p>
+          <button class="case-study-btn" onclick="openModal('deskline')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <a href="https://deskline.co" class="project-link" target="_blank" rel="noopener">deskline.co &rarr;</a>
+          <p class="project-note">Collaborative team project</p>
+        </div>
+      </div>
+
+      <!-- Relatask HOA -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshots/unifiedresident.png?v=3" alt="Relatask HOA / Unified Resident platform" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>Relatask HOA</h3>
+          <p>A unified HOA (Homeowners Association) management platform. Worked with the team to build resident-facing features and admin tools.</p>
+          <button class="case-study-btn" onclick="openModal('relatask')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <a href="https://unifiedresident.com" class="project-link" target="_blank" rel="noopener">unifiedresident.com &rarr;</a>
+          <p class="project-note">Collaborative team project</p>
+        </div>
+      </div>
+
+      <!-- AI Resume Analyzer -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshot-resume-analyzer.png?v=1" alt="AI Resume Analyzer" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>AI Resume Analyzer</h3>
+          <p>Upload a resume and get an AI-powered analysis in 15 seconds &mdash; match score, missing keywords, strengths, and actionable suggestions for ATS optimization.</p>
+          <button class="case-study-btn" onclick="openModal('resume')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <a href="https://resume.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">resume.betamaxgroup.tech &rarr;</a>
+          <p class="project-note">Solo project &mdash; AI engineering exercise</p>
+        </div>
+      </div>
+
+      <!-- AI Document Q&A -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshot-docqa.png?v=1" alt="AI Document Q&A" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>AI Document Q&amp;A (RAG)</h3>
+          <p>Upload any PDF or text document, ask questions, and get AI-generated answers with source citations and relevance scores. Built with retrieval-augmented generation.</p>
+          <button class="case-study-btn" onclick="openModal('docqa')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <a href="https://docqa.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">docqa.betamaxgroup.tech &rarr;</a>
+          <p class="project-note">Solo project &mdash; RAG / embeddings / vector search</p>
+        </div>
+      </div>
+
+      <!-- PioloBot Chatbot -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshot-piolobot.png?v=1" alt="PioloBot AI Chatbot" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>PioloBot &mdash; AI Chatbot</h3>
+          <p>An AI chatbot embedded on this portfolio. Visitors can ask about my skills, projects, and experience in natural language &mdash; powered by deepseek-v4-flash.</p>
+          <button class="case-study-btn" onclick="openModal('piolobot')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <a href="https://piolo.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">Try it &mdash; click the chat icon &rarr;</a>
+          <p class="project-note">Solo project &mdash; LLM integration / chat widget</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cert-banner reveal">
+      <h3>Certifications</h3>
+      <p>I hold multiple professional certifications across AI, automation, and development &mdash; all viewable on my LinkedIn profile.</p>
+      <a href="https://www.linkedin.com/in/piolo-rafael-avenido-3324333b3/" class="cert-link" target="_blank" rel="noopener">
+        View Certifications on LinkedIn
+        <svg viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-line reveal"></div>
+    <h2 class="section-title reveal">Let's Work Together</h2>
+    <p class="section-subtitle reveal">Have a project in mind? I'm available for freelance work.</p>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <h2>Get in Touch</h2>
+        <p>Whether you need a funnel website, an automation workflow, or help with an AI project &mdash; I'd love to hear from you.</p>
+        <div class="contact-methods">
+          <a href="mailto:piolo.avenido123@gmail.com" class="contact-method">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            piolo.avenido123@gmail.com
+          </a>
+          <a href="https://www.linkedin.com/in/piolo-rafael-avenido-3324333b3/" class="contact-method" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68zm1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            LinkedIn Profile
+          </a>
+        </div>
+      </div>
+      <form class="contact-form reveal" id="contactForm">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label for="email">Your Email</label>
+          <input type="email" id="email" name="email" required placeholder="john@example.com">
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required placeholder="Tell me about your project..."></textarea>
+        </div>
+        <button type="submit" class="form-btn" id="formBtn">Send Message</button>
+        <div class="form-status" id="formStatus"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CHATBOT WIDGET -->
+<button class="chatbot-toggle" id="chatbotToggle" aria-label="Open chat">
+  <span class="badge-dot" id="chatBadge"></span>
+  <svg class="chat-icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <svg class="close-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+
+<div class="chatbot-panel" id="chatbotPanel">
+  <div class="chatbot-header">
+    <div class="chatbot-avatar">
+      <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 3 3v1a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M12 14c-4 0-7 2-7 5v3h14v-3c0-3-3-5-7-5z"/></svg>
+    </div>
+    <div class="chatbot-header-info">
+      <h4>PioloBot</h4>
+      <p><span class="status-dot"></span> Online — Ask me anything</p>
+    </div>
+  </div>
+  <div class="chatbot-messages" id="chatbotMessages">
+    <div class="chat-msg bot">Hi! I'm PioloBot, Piolo's AI assistant. I can tell you about his skills, projects, and experience. What would you like to know?</div>
+  </div>
+  <div class="chatbot-suggestions" id="chatbotSuggestions">
+    <button class="suggestion-chip" onclick="sendSuggestion('What skills does Piolo have?')">What skills does Piolo have?</button>
+    <button class="suggestion-chip" onclick="sendSuggestion('Tell me about his projects')">Tell me about his projects</button>
+    <button class="suggestion-chip" onclick="sendSuggestion('How can I contact Piolo?')">How can I contact Piolo?</button>
+  </div>
+  <div class="chatbot-input-wrap">
+    <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Type your message..." maxlength="500" onkeydown="if(event.key==='Enter')sendChatMessage()">
+    <button class="chatbot-send" id="chatbotSend" onclick="sendChatMessage()" aria-label="Send">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Piolo Rafael Avenido.</p>
+  </div>
+</footer>
+
+<!-- CASE STUDY MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+// ===== SCROLL PROGRESS BAR =====
+const scrollProgress = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  scrollProgress.style.width = scrolled + '%';
+});
+
+// ===== THEME TOGGLE =====
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) html.setAttribute('data-theme', savedTheme);
+themeToggle.addEventListener('click', () => {
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+
+// ===== SCROLL REVEAL =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => observer.observe(el));
+
+// ===== STATS COUNTER =====
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.num').forEach(num => {
+        const target = parseInt(num.dataset.count);
+        const suffix = num.dataset.suffix || '';
+        let current = 0;
+        const increment = Math.max(1, Math.ceil(target / 30));
+        const interval = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(interval);
+          }
+          num.textContent = current + suffix;
+        }, 40);
+      });
+      statObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.stats-bar').forEach(el => statObserver.observe(el));
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', (e) => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
+      // Close mobile menu if open
+      document.querySelector('.nav-links').classList.remove('mobile-open');
+    }
+  });
+});
+
+// ===== MOBILE MENU =====
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.toggle('mobile-open');
+  });
+}
+
+// ===== CASE STUDY MODALS =====
+const caseStudies = {
+  zimmy: {
+    title: 'Zimmy POS',
+    role: 'Full-Stack Developer & Team Collaborator',
+    img: 'screenshots/zimmy-pos.png?v=3',
+    sections: [
+      { h: 'The Problem', p: 'Small businesses needed a modern, browser-based point-of-sale system that could handle not just transactions but also inventory, customer rewards, and multi-branch operations &mdash; all without installing software on each device.' },
+      { h: 'My Role', p: 'Worked as part of a collaborative team building both the front-end interface and backend API. Contributed to the redemption system, transaction flows, and inventory management features.' },
+      { h: 'The Solution', p: 'A web-based POS system accessible from any device with a browser. Features include real-time transaction processing, inventory tracking with billing of materials, a customer rewards and redemption system, and multi-branch management with centralized revenue monitoring.' },
+      { h: 'Tech & Tools', p: '', tags: ['Next.js', 'React', 'PostgreSQL', 'Prisma', 'Docker', 'Caddy', 'Text Script'] }
+    ]
+  },
+  n8n: {
+    title: 'n8n Automation Workflows',
+    role: 'Automation Specialist',
+    img: 'screenshots/n8n-automation.png?v=3',
+    sections: [
+      { h: 'The Problem', p: 'Businesses were spending hours on repetitive manual tasks &mdash; data entry, lead routing, email follow-ups, and report generation. These needed to be automated without expensive enterprise tools.' },
+      { h: 'My Role', p: 'Designed and built custom n8n workflows that connected various APIs and services to automate end-to-end business processes. Handled logic, error handling, and data transformation between nodes.' },
+      { h: 'The Solution', p: 'A suite of n8n automation workflows that streamline business processes: automated lead capture and routing, email sequence triggers, data sync between CRM and spreadsheets, and scheduled report generation &mdash; reducing manual workload by hours per week.' },
+      { h: 'Tech & Tools', p: '', tags: ['n8n', 'REST APIs', 'Webhooks', 'Google Sheets', 'SMTP', 'Cron'] }
+    ]
+  },
+  relaytask: {
+    title: 'Relay Task',
+    role: 'Funnel Website Developer & Team Member',
+    img: 'screenshots/relaytask.png?v=3',
+    sections: [
+      { h: 'The Problem', p: 'A real company offering Virtual Assistant services needed a high-converting funnel website to attract clients, showcase their VA offerings, and drive sign-ups for their services.' },
+      { h: 'My Role', p: 'Built the funnel website front-end, working alongside team members to create a clean, conversion-focused layout that highlights the company&rsquo;s VA services and drives visitor action.' },
+      { h: 'The Solution', p: 'Relay Task (relaytask.com) is a funnel website for a real company that offers Virtual Assistant work and services. The site showcases their VA offerings, service packages, and provides a clear path for clients to get in touch and hire virtual assistants.' },
+      { h: 'Tech & Tools', p: '', tags: ['GHL Funnel Builder', 'Front-End Development', 'Lead Generation', 'Responsive Design'] },
+      { link: 'https://relaytask.com', linkText: 'Visit relaytask.com' }
+    ]
+  },
+  deskline: {
+    title: 'Deskline.co',
+    role: 'Chatbot Developer & Team Member',
+    img: 'screenshots/deskline.png?v=3',
+    sections: [
+      { h: 'The Problem', p: 'Businesses were losing customers due to slow response times on their websites. They needed an automated chatbot that could handle common queries 24/7 without human intervention.' },
+      { h: 'My Role', p: 'Worked on the chatbot interface and integration. Helped build the conversational flow, integrated it with the website frontend, and contributed to the SaaS platform architecture.' },
+      { h: 'The Solution', p: 'Deskline.co is a web chatbot SaaS platform that helps businesses automate customer support conversations. The chatbot handles FAQs, routes complex queries to humans, and captures lead information &mdash; all through an embeddable widget.' },
+      { h: 'Tech & Tools', p: '', tags: ['Chatbot', 'SaaS', 'JavaScript', 'API Integration', 'Customer Support'] },
+      { link: 'https://deskline.co', linkText: 'Visit deskline.co' }
+    ]
+  },
+  relatask: {
+    title: 'Relatask HOA (Unified Resident)',
+    role: 'Front-End Developer & Team Member',
+    img: 'screenshots/unifiedresident.png?v=3',
+    sections: [
+      { h: 'The Problem', p: 'Homeowners Associations (HOAs) were managing resident communications, payments, and requests through scattered tools &mdash; spreadsheets, group chats, and paper forms. They needed a unified platform.' },
+      { h: 'My Role', p: 'Worked with the team to build resident-facing features and admin tools. Contributed to the front-end development and helped integrate various management modules.' },
+      { h: 'The Solution', p: 'Relatask HOA (unifiedresident.com) is a unified HOA management platform that centralizes resident communications, payment tracking, service requests, and community announcements into a single web application.' },
+      { h: 'Tech & Tools', p: '', tags: ['React', 'Web Platform', 'HOA Management', 'Admin Tools'] },
+      { link: 'https://unifiedresident.com', linkText: 'Visit unifiedresident.com' }
+    ]
+  },
+  resume: {
+    title: 'AI Resume Analyzer',
+    role: 'Solo Developer & AI Engineer',
+    img: 'screenshot-resume-analyzer.png?v=1',
+    sections: [
+      { h: 'The Problem', p: '75% of resumes are rejected by Applicant Tracking Systems (ATS) before a human ever sees them. Job seekers have no feedback loop &mdash; they can\'t see why their resume was filtered out, which keywords they\'re missing, or how to improve their match. Existing tools are either expensive, shallow, or don\'t provide actionable insights.' },
+      { h: 'My Role', p: 'Solo developer. I built this as a personal AI engineering exercise to get hands-on LLM integration experience &mdash; from PDF text extraction to structured prompt engineering to production deployment. Every part of the stack, from the FastAPI backend to the frontend UI to the Docker deployment, was built by me.' },
+      { h: 'The Solution', p: 'A web app that lets users upload a resume (PDF or text), optionally paste a job description, and get an AI-powered analysis in about 15 seconds. It returns 8 things: an animated match score (0-100, color-coded), a plain-language summary, strengths referencing actual resume content, areas to improve, matched skills (green tags), missing keywords (red tags &mdash; the most actionable insight for ATS optimization), concrete improvement suggestions, and an experience assessment against the job\'s requirements.' },
+      { h: 'Technical Flow', p: 'Upload &rarr; FastAPI validates file (type, size, content length) &rarr; PyMuPDF extracts text &rarr; text truncated to 6000 chars &rarr; system prompt (ATS analyst role) + user prompt sent to deepseek-v4-flash via Ollama Cloud &rarr; LLM returns structured JSON &rarr; backend strips markdown wrappers and parses &rarr; frontend renders with animated score ring, tag visualization, and structured lists.' },
+      { h: 'Key Technical Decisions', p: 'Structured LLM output (forced JSON response for reliable parsing), text truncation to 6000 chars (cost control + token limits), graceful degradation (handles partial LLM responses), multi-layer validation (file type, size, content length checks), and a self-hosted LLM proxy for cost-effective inference.' },
+      { h: 'Tech & Tools', p: '', tags: ['Python', 'FastAPI', 'PyMuPDF', 'deepseek-v4-flash', 'Ollama Cloud', 'Docker', 'Caddy', 'Cloudflare', 'ATS Optimization', 'Prompt Engineering'] },
+      { link: 'https://resume.betamaxgroup.tech', linkText: 'Try it live' }
+    ]
+  },
+  docqa: {
+    title: 'AI Document Q&A (RAG)',
+    role: 'Solo Developer & AI Engineer',
+    img: 'screenshot-docqa.png?v=1',
+    sections: [
+      { h: 'The Problem', p: 'People deal with long documents &mdash; contracts, research papers, manuals, reports &mdash; and have no fast way to extract specific answers from them. Ctrl+F only finds exact keywords, not meaning. Traditional search doesn&rsquo;t understand context, so you still have to read paragraphs around every hit to find your answer. The challenge was building something that actually understands the document and can answer questions in natural language, with proof of where the answer came from.' },
+      { h: 'My Role', p: 'Solo developer. I built this as a personal AI engineering exercise to learn retrieval-augmented generation (RAG) &mdash; the technique behind enterprise AI document tools. Unlike my Resume Analyzer (which sends text directly to an LLM), this project uses a fundamentally different approach: local embeddings, vector similarity search, and context-grounded generation. Every component was built by me, from the chunking strategy to the embedding pipeline to the citation system.' },
+      { h: 'The Solution', p: 'A web app where you upload any PDF or text document, then ask questions about it in a chat interface. The AI answers based ONLY on the document (no hallucination), and shows you the exact source passages it used, with relevance scores. The two-panel layout puts the document upload on the left and the Q&A chat on the right, so you can reference both simultaneously.' },
+      { h: 'How RAG Works', p: '1. Upload &rarr; PyMuPDF extracts text from the PDF.<br>2. Text is split into ~1000-character chunks with 200-char overlap.<br>3. Each chunk is embedded using sentence-transformers (all-MiniLM-L6-v2) running locally in the container &mdash; no external API needed.<br>4. Chunks are stored in an in-memory vector store.<br>5. When you ask a question, your question is embedded and compared against all chunks using cosine similarity.<br>6. The top 3 most relevant chunks are sent to deepseek-v4-flash (Ollama Cloud) along with your question.<br>7. The AI generates an answer grounded in the retrieved context, with citations showing source text and relevance score.' },
+      { h: 'Key Technical Decisions', p: 'Local embeddings (all-MiniLM-L6-v2, 384-dim) instead of API-based embeddings &mdash; eliminates a dependency and shows I can run ML models in production. Cosine similarity for retrieval (standard for semantic search). Top-3 chunk retrieval (balances context window limits with answer quality). 200-char chunk overlap (prevents losing context at chunk boundaries). In-memory vector store (suitable for single-document scope; could swap for ChromaDB or FAISS for multi-document).' },
+      { h: 'What I Learned', p: 'This project taught me the full RAG pipeline &mdash; the technique that powers enterprise AI document tools. I learned how embeddings capture semantic meaning, how vector similarity search finds relevant context without keyword matching, and how to ground LLM responses in retrieved context to prevent hallucination. The citation system was the hardest part &mdash; tracking which chunks were retrieved and mapping them back to readable source text with relevance scores.' },
+      { h: 'Tech & Tools', p: '', tags: ['Python', 'FastAPI', 'PyMuPDF', 'sentence-transformers', 'all-MiniLM-L6-v2', 'Cosine Similarity', 'Vector Search', 'deepseek-v4-flash', 'Ollama Cloud', 'Docker', 'Caddy', 'RAG', 'Embeddings'] },
+      { link: 'https://docqa.betamaxgroup.tech', linkText: 'Try it live' }
+    ]
+  },
+  piolobot: {
+    title: 'PioloBot — AI Chatbot',
+    role: 'Solo Developer & AI Engineer',
+    img: 'screenshot-piolobot.png?v=1',
+    sections: [
+      { h: 'The Problem', p: 'Portfolio visitors typically just scan a page and leave. There was no interactive way for them to ask questions about my skills, projects, or experience in natural language. A static page can&rsquo;t answer &ldquo;What AI projects has Piolo built?&rdquo; or &ldquo;Does he know Python?&rdquo; &mdash; visitors have to read through everything to find what they need.' },
+      { h: 'My Role', p: 'Solo developer. I built PioloBot as both a portfolio enhancement and a real AI integration exercise. I designed the system prompt that gives the bot knowledge about my background, built the /chat API endpoint into the portfolio server, and created the chat widget UI that matches the portfolio&rsquo;s dark glassmorphism design.' },
+      { h: 'The Solution', p: 'A floating chat widget embedded on the portfolio. Visitors click the chat icon in the bottom-right corner to open a chat panel. They can ask questions in natural language about my skills, projects, experience, and contact info. The bot responds in real-time with accurate, context-aware answers. Quick-start suggestion chips (Skills, Projects, Contact) help visitors get started immediately.' },
+      { h: 'Technical Flow', p: 'Visitor types a question &rarr; frontend sends POST to /chat on the portfolio server &rarr; server.py forwards it to deepseek-v4-flash via Ollama Cloud with a system prompt containing all portfolio info &rarr; LLM responds as PioloBot &rarr; response streamed back to the chat widget &rarr; rendered with typing indicator for UX.' },
+      { h: 'Key Technical Decisions', p: 'System prompt engineering (the bot knows about all 8 projects, skills, education, and contact info &mdash; all in a single prompt). 300-token max response (keeps answers concise). 500-char input limit (prevents abuse). No external dependencies &mdash; the /chat endpoint uses only Python stdlib, no extra packages. Typing indicator for perceived responsiveness. Suggestion chips to guide visitor interaction.' },
+      { h: 'Tech & Tools', p: '', tags: ['Python', 'deepseek-v4-flash', 'Ollama Cloud', 'LLM Integration', 'System Prompt Engineering', 'Chat Widget', 'Vanilla JS', 'Caddy', 'Cloudflare'] },
+      { link: 'https://piolo.betamaxgroup.tech', linkText: 'Try it — click the chat icon' }
+    ]
+  }
+};
+
+function openModal(key) {
+  const cs = caseStudies[key];
+  if (!cs) return;
+  let html = `<h3>${cs.title}</h3><div class="modal-role">${cs.role}</div>`;
+  if (cs.img) html += `<img class="modal-img" src="${cs.img}" alt="${cs.title}">`;
+  cs.sections.forEach(s => {
+    html += `<div class="modal-section"><h4>${s.h}</h4>`;
+    if (s.p) html += `<p>${s.p}</p>`;
+    if (s.tags) {
+      html += `<div class="modal-tags">`;
+      s.tags.forEach(t => html += `<span class="modal-tag">${t}</span>`);
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+  if (cs.link) {
+    html += `<a href="${cs.link}" class="modal-link" target="_blank" rel="noopener">${cs.linkText} &rarr;</a>`;
+  }
+  document.getElementById('modalContent').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay') && !e.target.classList.contains('modal-close') && e.type === 'click') return;
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ===== CONTACT FORM =====
+const form = document.getElementById('contactForm');
+const formBtn = document.getElementById('formBtn');
+const formStatus = document.getElementById('formStatus');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  formBtn.disabled = true;
+  formBtn.textContent = 'Sending...';
+  formStatus.className = 'form-status';
+
+  try {
+    const formData = new FormData(form);
+    const res = await fetch('/contact', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (data.ok) {
+      formStatus.className = 'form-status success';
+      formStatus.textContent = data.message;
+      form.reset();
+    } else {
+      formStatus.className = 'form-status error';
+      formStatus.textContent = data.error || 'Something went wrong. Please try again.';
+    }
+  } catch (err) {
+    formStatus.className = 'form-status error';
+    formStatus.textContent = 'Network error. Please email me directly at piolo.avenido123@gmail.com';
+  }
+  formBtn.disabled = false;
+  formBtn.textContent = 'Send Message';
+  });
+
+  // ===== CHATBOT WIDGET =====
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  const chatbotPanel = document.getElementById('chatbotPanel');
+  const chatbotMessages = document.getElementById('chatbotMessages');
+  const chatbotInput = document.getElementById('chatbotInput');
+  const chatbotSend = document.getElementById('chatbotSend');
+  const chatBadge = document.getElementById('chatBadge');
+  let chatOpened = false;
+
+  chatbotToggle.addEventListener('click', () => {
+    chatbotToggle.classList.toggle('active');
+    chatbotPanel.classList.toggle('active');
+    if (!chatOpened) {
+      chatBadge.style.display = 'none';
+      chatOpened = true;
+    }
+    if (chatbotPanel.classList.contains('active')) {
+      setTimeout(() => chatbotInput.focus(), 300);
+    }
+  });
+
+  function appendMessage(text, sender) {
+    const msg = document.createElement('div');
+    msg.className = 'chat-msg ' + sender;
+    msg.textContent = text;
+    chatbotMessages.appendChild(msg);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    return msg;
+  }
+
+  function sendSuggestion(text) {
+    chatbotInput.value = text;
+    sendChatMessage();
+  }
+
+  async function sendChatMessage() {
+    const text = chatbotInput.value.trim();
+    if (!text) return;
+
+    appendMessage(text, 'user');
+    chatbotInput.value = '';
+    chatbotSend.disabled = true;
+
+    const typingEl = appendMessage('PioloBot is typing', 'bot typing');
+
+    try {
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+
+      typingEl.remove();
+
+      if (data.reply) {
+        appendMessage(data.reply, 'bot');
+      } else {
+        appendMessage(data.error || 'Sorry, something went wrong. Please try again.', 'bot');
+      }
+    } catch (err) {
+      typingEl.remove();
+      appendMessage('Network error. Please try again or email Piolo at piolo.avenido123@gmail.com', 'bot');
+    }
+
+    chatbotSend.disabled = false;
+    chatbotInput.focus();
+  }
+  </script>
+</body>
+</html>
