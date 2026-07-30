@@ -655,7 +655,7 @@ footer p a { color: var(--accent); text-decoration: none; }
     <!-- Stats counter -->
     <div class="stats-bar reveal">
       <div class="stat-box">
-        <div class="num" data-count="9" data-suffix="+">0</div>
+        <div class="num" data-count="10" data-suffix="+">0</div>
         <div class="label">Projects Built</div>
       </div>
       <div class="stat-box">
@@ -718,7 +718,7 @@ footer p a { color: var(--accent); text-decoration: none; }
             <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
           </div>
           <div>
-            <div class="info-num">3</div>
+            <div class="info-num">5</div>
             <div class="info-label">Solo AI projects built &amp; deployed</div>
           </div>
         </div>
@@ -996,6 +996,24 @@ footer p a { color: var(--accent); text-decoration: none; }
           <a href="https://leads.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">leads.betamaxgroup.tech &rarr;</a>
 
           <p class="project-note">Solo project &mdash; web scraping / AI extraction / automation</p>
+        </div>
+      </div>
+
+      <!-- Sentiment Analysis Dashboard -->
+      <div class="project-card">
+        <div class="project-thumb-wrap">
+          <img class="project-thumb" src="screenshot-sentiment.png?v=1" alt="Sentiment Analysis Dashboard" loading="lazy">
+        </div>
+        <div class="project-body">
+          <h3>Sentiment Analysis Dashboard</h3>
+          <p>Paste customer reviews, feedback, or social comments &mdash; AI classifies each as positive, negative, or neutral with confidence scores and key phrases, then visualizes the results.</p>
+          <button class="case-study-btn" onclick="openModal('sentiment')">
+            <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z"/></svg>
+            Case Study
+          </button>
+          <a href="https://sentiment.betamaxgroup.tech" class="project-link" target="_blank" rel="noopener">sentiment.betamaxgroup.tech &rarr;</a>
+
+          <p class="project-note">Solo project &mdash; NLP / data visualization / automation</p>
         </div>
       </div>
 
@@ -1295,6 +1313,20 @@ const caseStudies = {
       { h: 'Key Technical Decisions', p: 'Server-side scraping with httpx instead of headless browser (faster, lighter, sufficient for most sites). Hybrid data collection &mdash; emails and social links extracted via both regex AND LLM, then merged. Structured JSON output from LLM with fallback parser for markdown-wrapped responses. 8000-char text truncation to balance extraction quality with LLM speed (5-6 seconds typical). In-memory search history (last 20 searches, no database needed).' },
       { h: 'Tech & Tools', p: '', tags: ['Python', 'FastAPI', 'httpx', 'BeautifulSoup', 'deepseek-v4-flash', 'Ollama Cloud', 'Web Scraping', 'AI Extraction', 'CSV Export', 'Docker', 'Caddy'] },
       { link: 'https://leads.betamaxgroup.tech', linkText: 'Try it — enter any company URL' }
+    ]
+  },
+  sentiment: {
+    title: 'Sentiment Analysis Dashboard',
+    role: 'Solo Developer & AI Engineer',
+    img: 'screenshot-sentiment.png?v=1',
+    sections: [
+      { h: 'The Problem', p: 'Businesses collect tons of customer feedback &mdash; reviews, survey responses, social media comments &mdash; but making sense of it all is manual and slow. Reading 200 reviews to figure out the overall sentiment, spot recurring complaints, and identify what customers love takes hours. Spreadsheets don&rsquo;t tell you the emotional tone of text, and dedicated sentiment tools are expensive and require data science expertise to set up.' },
+      { h: 'My Role', p: 'Solo developer. I built this as a practical AI-powered data analytics tool that combines natural language processing with data visualization. This directly reinforces the data analytics skills on my resume &mdash; "skilled in basic cleaning, sorting, and analyzing data" &mdash; and aligns with my marketing automation background from Relaytask, where sentiment monitoring is a common use case for brand perception.' },
+      { h: 'The Solution', p: 'A web app where you paste any batch of text (customer reviews, feedback, social comments, emails &mdash; up to 500 entries), and the AI instantly classifies each as positive, negative, or neutral. It returns a confidence score, extracts the key phrases driving each sentiment, and visualizes everything with interactive charts: a pie chart for the overall sentiment breakdown, a bar chart for trends, a word cloud of sentiment-driving phrases, and a sortable results table. Results can be exported as CSV.' },
+      { h: 'How It Works', p: 'User pastes text (one entry per line) &rarr; FastAPI backend splits entries and batches them (25 per batch) &rarr; each batch sent to deepseek-v4-flash via Ollama Cloud with a sentiment analysis system prompt &rarr; LLM returns structured JSON with sentiment label, confidence score (0-100), and key phrases for each entry &rarr; backend validates and normalizes results, computes aggregate stats (percentages, top phrases) &rarr; frontend renders pie chart, bar chart, word cloud, and sortable table using Chart.js &rarr; user can export everything as CSV.' },
+      { h: 'Key Technical Decisions', p: 'Batch processing (25 entries per LLM call) to stay within token limits while keeping response time fast even for 500 entries. Structured JSON output from LLM with markdown fence stripping and validation fallback. Confidence score normalization (clamped 0-100). Key phrase aggregation across all entries for word cloud generation. Frontend uses Chart.js for lightweight charting with no React or heavy framework. CSV export via streaming response for large datasets. Max 500 entries per analysis to prevent abuse.' },
+      { h: 'Tech & Tools', p: '', tags: ['Python', 'FastAPI', 'deepseek-v4-flash', 'Ollama Cloud', 'NLP', 'Sentiment Analysis', 'Chart.js', 'Data Visualization', 'CSV Export', 'Docker', 'Caddy'] },
+      { link: 'https://sentiment.betamaxgroup.tech', linkText: 'Try it — paste any feedback text' }
     ]
   }
 };
