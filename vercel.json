@@ -3,17 +3,6 @@
   "buildCommand": null,
   "devCommand": null,
   "installCommand": null,
-  "functions": {
-    "api/chat.py": {
-      "memory": 512
-    },
-    "api/contact.py": {
-      "memory": 256
-    },
-    "api/feedback.py": {
-      "memory": 128
-    }
-  },
   "routes": [
     { "src": "/chat", "dest": "/api/chat" },
     { "src": "/contact", "dest": "/api/contact" },
