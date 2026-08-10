@@ -1,7 +1,7 @@
 """
 Resume PDF generator for Piolo Rafael Avenido.
-Matches the original resume design: Times New Roman (Liberation Serif),
-11pt body, US Letter, black text, simple horizontal rules under section headers.
+Clean professional design: Liberation Serif, 10pt body, US Letter,
+light blue section headers, small refined bullets, proper spacing.
 """
 import pymupdf
 
@@ -18,33 +18,37 @@ FONT_ITALIC_NAME = "serifi"
 _FONT_REG_OBJ = pymupdf.Font(fontfile=FONT_REG_FILE)
 _FONT_BOLD_OBJ = pymupdf.Font(fontfile=FONT_BOLD_FILE)
 
-# --- Page geometry (US Letter, matching original) ---
+# --- Page geometry (US Letter) ---
 PAGE_W = 612
 PAGE_H = 792
 MARGIN_L = 72
 MARGIN_R = 72
-MARGIN_T = 60
+MARGIN_T = 54
 MARGIN_B = 54
 CONTENT_W = PAGE_W - MARGIN_L - MARGIN_R
 
-# --- Font sizes (matching original) ---
-SIZE_NAME = 15
-SIZE_CONTACT = 11
+# --- Font sizes ---
+SIZE_NAME = 18
+SIZE_CONTACT = 9.5
 SIZE_SECTION = 11
-SIZE_BODY = 11
-SIZE_SUB = 11
+SIZE_BODY = 10
+SIZE_SUB = 10
+SIZE_BULLET = 7  # smaller bullet character
 
 # --- Line heights ---
-LH_BODY = 15
-LH_SECTION = 18
-GAP_SECTION = 8
+LH_BODY = 13.5
+LH_SECTION = 16
+GAP_SECTION = 10
 GAP_ENTRY = 6
-BULLET_INDENT = 18
+BULLET_INDENT = 16
 
-WRAP_SAFETY = 8
+WRAP_SAFETY = 6
 
-# --- Colors (black, matching original) ---
+# --- Colors ---
 COLOR_BLACK = (0, 0, 0)
+COLOR_BLUE = (0.2, 0.4, 0.7)  # light blue for section headers
+COLOR_NAME = (0.15, 0.35, 0.6)  # slightly darker blue for name
+COLOR_RULE = (0.6, 0.7, 0.85)  # light blue rule under sections
 
 
 class ResumeBuilder:
@@ -86,7 +90,7 @@ class ResumeBuilder:
             lines.append(" ".join(current))
         return lines
 
-    def _put(self, x, y, text, bold, size, color=COLOR_BLACK, italic=False):
+    def _put(self, x, y, text, bold, size, color=COLOR_BLACK, italic=False, link_url=None):
         if italic:
             fontname = FONT_ITALIC_NAME
         elif bold:
@@ -100,17 +104,21 @@ class ResumeBuilder:
             fontsize=size,
             color=color
         )
+        if link_url:
+            tw = self._text_w(text, bold, size)
+            rect = pymupdf.Rect(x, y - 2, x + tw, y + size + 1)
+            self.page.insert_link({"kind": pymupdf.LINK_URI, "from": rect, "uri": link_url})
 
     def section_header(self, title):
         self.y += GAP_SECTION
         self._ensure_space(LH_SECTION + 4)
-        self._put(MARGIN_L, self.y + SIZE_SECTION, title, True, SIZE_SECTION)
-        # Horizontal rule under section header
+        self._put(MARGIN_L, self.y + SIZE_SECTION, title, True, SIZE_SECTION, color=COLOR_BLUE)
+        # Light blue horizontal rule under section header
         self.page.draw_line(
             pymupdf.Point(MARGIN_L, self.y + SIZE_SECTION + 2),
             pymupdf.Point(MARGIN_L + CONTENT_W, self.y + SIZE_SECTION + 2),
-            color=COLOR_BLACK,
-            width=0.5
+            color=COLOR_RULE,
+            width=0.6
         )
         self.y += LH_SECTION
 
@@ -125,26 +133,27 @@ class ResumeBuilder:
             self.y += gap
 
     def bullet(self, text, indent=BULLET_INDENT):
-        bullet_x = MARGIN_L + 4
+        bullet_x = MARGIN_L + 2
         text_x = MARGIN_L + indent
         max_text_w = CONTENT_W - indent
         lines = self._wrap(text, False, SIZE_BODY, max_text_w)
         for i, line in enumerate(lines):
             self._ensure_space(LH_BODY)
             if i == 0:
-                self._put(bullet_x, self.y + SIZE_BODY, "\u2022", False, SIZE_BODY)
+                # Small refined bullet — vertically centered with text
+                self._put(bullet_x, self.y + SIZE_BODY - 1, "\u00b7", False, SIZE_BULLET, color=COLOR_BLUE)
             self._put(text_x, self.y + SIZE_BODY, line, False, SIZE_BODY)
             self.y += LH_BODY
 
     def sub_bullet(self, text, indent=BULLET_INDENT + 12):
-        bullet_x = MARGIN_L + BULLET_INDENT + 4
+        bullet_x = MARGIN_L + BULLET_INDENT + 2
         text_x = MARGIN_L + indent
         max_text_w = CONTENT_W - indent
         lines = self._wrap(text, False, SIZE_BODY, max_text_w)
         for i, line in enumerate(lines):
             self._ensure_space(LH_BODY)
             if i == 0:
-                self._put(bullet_x, self.y + SIZE_BODY, "-", False, SIZE_BODY)
+                self._put(bullet_x, self.y + SIZE_BODY - 1, "\u2013", False, SIZE_BULLET, color=COLOR_BLUE)
             self._put(text_x, self.y + SIZE_BODY, line, False, SIZE_BODY)
             self.y += LH_BODY
 
@@ -152,17 +161,16 @@ class ResumeBuilder:
         self._ensure_space(LH_BODY + (LH_BODY if subtitle else 0) + 2)
         self._put(MARGIN_L, self.y + SIZE_BODY, title, True, SIZE_BODY)
         if date:
-            # Right-align date
             date_w = self._text_w(date, False, SIZE_BODY)
             self._put(MARGIN_L + CONTENT_W - date_w, self.y + SIZE_BODY, date, False, SIZE_BODY)
         self.y += LH_BODY
         if subtitle:
-            self._put(MARGIN_L, self.y + SIZE_BODY, subtitle, False, SIZE_BODY)
+            self._put(MARGIN_L, self.y + SIZE_BODY, subtitle, False, SIZE_BODY, color=(0.3, 0.3, 0.3))
             self.y += LH_BODY
 
     def sub_label(self, text):
         self._ensure_space(LH_BODY + 2)
-        self._put(MARGIN_L, self.y + SIZE_BODY, text, True, SIZE_BODY)
+        self._put(MARGIN_L, self.y + SIZE_BODY, text, True, SIZE_BODY, color=COLOR_BLUE)
         self.y += LH_BODY
 
     def build(self):
@@ -181,16 +189,44 @@ class ResumeBuilder:
         print(f"Resume saved to {OUT}")
 
     def _header(self):
-        self._put(MARGIN_L, self.y + SIZE_NAME, "PIOLO RAFAEL AVENIDO", True, SIZE_NAME)
-        self.y += SIZE_NAME + 6
-        contact = "piolo.avenido123@gmail.com  |  09186813030  |  09919542477"
-        self._put(MARGIN_L, self.y + SIZE_CONTACT, contact, False, SIZE_CONTACT)
-        self.y += SIZE_CONTACT + 2
-        self._put(MARGIN_L, self.y + SIZE_CONTACT, "LinkedIn: linkedin.com/in/piolo-rafael-avenido  |  GitHub: github.com/pioloavenido123-source", False, SIZE_CONTACT)
-        self.y += SIZE_CONTACT + 2
-        self._put(MARGIN_L, self.y + SIZE_CONTACT, "Portfolio: piolo-portfolio.vercel.app", False, SIZE_CONTACT)
-        self.y += SIZE_CONTACT + 2
-        self._put(MARGIN_L, self.y + SIZE_CONTACT, "Barangay San Francisco, Magarao, Camarines Sur, 4403, Philippines", False, SIZE_CONTACT)
+        # Name in blue, centered
+        name = "PIOLO RAFAEL AVENIDO"
+        name_w = self._text_w(name, True, SIZE_NAME)
+        center_x = (PAGE_W - name_w) / 2
+        self._put(center_x, self.y + SIZE_NAME, name, True, SIZE_NAME, color=COLOR_NAME)
+        self.y += SIZE_NAME + 10  # extra space after name
+
+        # Contact info centered, smaller font, with clickable links
+        contact1 = "piolo.avenido123@gmail.com  |  09186813030  |  09919542477"
+        c1_w = self._text_w(contact1, False, SIZE_CONTACT)
+        self._put((PAGE_W - c1_w) / 2, self.y + SIZE_CONTACT, contact1, False, SIZE_CONTACT, color=(0.3, 0.3, 0.3))
+        self.y += SIZE_CONTACT + 3
+
+        contact2 = "LinkedIn: linkedin.com/in/piolo-rafael-avenido  |  GitHub: github.com/pioloavenido123-source"
+        c2_w = self._text_w(contact2, False, SIZE_CONTACT)
+        c2_x = (PAGE_W - c2_w) / 2
+        self._put(c2_x, self.y + SIZE_CONTACT, contact2, False, SIZE_CONTACT, color=(0.3, 0.3, 0.3))
+        # Add clickable link for LinkedIn portion
+        li_text = "LinkedIn: linkedin.com/in/piolo-rafael-avenido"
+        li_w = self._text_w(li_text, False, SIZE_CONTACT)
+        self.page.insert_link({"kind": pymupdf.LINK_URI, "from": pymupdf.Rect(c2_x, self.y - 2, c2_x + li_w, self.y + SIZE_CONTACT + 1), "uri": "https://linkedin.com/in/piolo-rafael-avenido"})
+        # Add clickable link for GitHub portion
+        gh_start = c2_x + li_w + self._text_w("  |  ", False, SIZE_CONTACT)
+        gh_text = "GitHub: github.com/pioloavenido123-source"
+        gh_w = self._text_w(gh_text, False, SIZE_CONTACT)
+        self.page.insert_link({"kind": pymupdf.LINK_URI, "from": pymupdf.Rect(gh_start, self.y - 2, gh_start + gh_w, self.y + SIZE_CONTACT + 1), "uri": "https://github.com/pioloavenido123-source"})
+        self.y += SIZE_CONTACT + 3
+
+        contact3 = "Portfolio: piolo-portfolio.vercel.app"
+        c3_w = self._text_w(contact3, False, SIZE_CONTACT)
+        c3_x = (PAGE_W - c3_w) / 2
+        self._put(c3_x, self.y + SIZE_CONTACT, contact3, False, SIZE_CONTACT, color=(0.3, 0.3, 0.3))
+        self.page.insert_link({"kind": pymupdf.LINK_URI, "from": pymupdf.Rect(c3_x, self.y - 2, c3_x + c3_w, self.y + SIZE_CONTACT + 1), "uri": "https://piolo-portfolio.vercel.app"})
+        self.y += SIZE_CONTACT + 3
+
+        contact4 = "Barangay San Francisco, Magarao, Camarines Sur, 4403, Philippines"
+        c4_w = self._text_w(contact4, False, SIZE_CONTACT)
+        self._put((PAGE_W - c4_w) / 2, self.y + SIZE_CONTACT, contact4, False, SIZE_CONTACT, color=(0.3, 0.3, 0.3))
         self.y += SIZE_CONTACT + 8
 
     def _summary(self):
