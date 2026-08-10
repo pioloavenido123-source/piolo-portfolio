@@ -132,17 +132,79 @@ class ResumeBuilder:
         if gap:
             self.y += gap
 
-    def bullet(self, text, indent=BULLET_INDENT):
+    def bullet(self, text, indent=BULLET_INDENT, bold_prefix=None):
+        """Render a bullet. If bold_prefix is provided, that portion is bold
+        and the remainder of text is regular weight."""
         bullet_x = MARGIN_L + 2
         text_x = MARGIN_L + indent
         max_text_w = CONTENT_W - indent
-        lines = self._wrap(text, False, SIZE_BODY, max_text_w)
-        for i, line in enumerate(lines):
+
+        if not bold_prefix:
+            # Simple case — all regular weight
+            lines = self._wrap(text, False, SIZE_BODY, max_text_w)
+            for i, line in enumerate(lines):
+                self._ensure_space(LH_BODY)
+                if i == 0:
+                    self._put(bullet_x, self.y + SIZE_BODY - 1, "\u00b7", False, SIZE_BULLET, color=COLOR_BLUE)
+                self._put(text_x, self.y + SIZE_BODY, line, False, SIZE_BODY)
+                self.y += LH_BODY
+            return
+
+        # Split into bold prefix and regular remainder
+        remainder = text[len(bold_prefix):]
+
+        # Strategy: render the bold prefix, then continue the same line with
+        # the regular text, wrapping as needed.  We build "segments" — each
+        # segment is (text, is_bold) — and lay them out word by word.
+        bold_words = bold_prefix.split()
+        reg_words = remainder.split()
+        all_words = [(w, True) for w in bold_words] + [(w, False) for w in reg_words]
+
+        cur_x = text_x
+        line_has_bullet = True
+        line_words = []
+        for word, is_bold in all_words:
+            trial = " ".join([w for w, _ in line_words] + [word])
+            # Measure with mixed weights — approximate by checking the widest version
+            trial_w = 0
+            tmp = ""
+            for w, b in line_words + [(word, is_bold)]:
+                if tmp:
+                    trial_w += self._text_w(" ", False, SIZE_BODY)
+                trial_w += self._text_w(w, b, SIZE_BODY)
+
+            if trial_w <= max_text_w - WRAP_SAFETY:
+                line_words.append((word, is_bold))
+            else:
+                # Flush current line
+                if line_words:
+                    self._ensure_space(LH_BODY)
+                    if line_has_bullet:
+                        self._put(bullet_x, self.y + SIZE_BODY - 1, "\u00b7", False, SIZE_BULLET, color=COLOR_BLUE)
+                        line_has_bullet = False
+                    cx = text_x
+                    for w, b in line_words:
+                        if cx > text_x:
+                            self._put(cx, self.y + SIZE_BODY, " ", False, SIZE_BODY)
+                            cx += self._text_w(" ", False, SIZE_BODY)
+                        self._put(cx, self.y + SIZE_BODY, w, b, SIZE_BODY)
+                        cx += self._text_w(w, b, SIZE_BODY)
+                    self.y += LH_BODY
+                line_words = [(word, is_bold)]
+                line_has_bullet = False
+
+        # Flush remaining
+        if line_words:
             self._ensure_space(LH_BODY)
-            if i == 0:
-                # Small refined bullet — vertically centered with text
+            if line_has_bullet:
                 self._put(bullet_x, self.y + SIZE_BODY - 1, "\u00b7", False, SIZE_BULLET, color=COLOR_BLUE)
-            self._put(text_x, self.y + SIZE_BODY, line, False, SIZE_BODY)
+            cx = text_x
+            for w, b in line_words:
+                if cx > text_x:
+                    self._put(cx, self.y + SIZE_BODY, " ", False, SIZE_BODY)
+                    cx += self._text_w(" ", False, SIZE_BODY)
+                self._put(cx, self.y + SIZE_BODY, w, b, SIZE_BODY)
+                cx += self._text_w(w, b, SIZE_BODY)
             self.y += LH_BODY
 
     def sub_bullet(self, text, indent=BULLET_INDENT + 12):
@@ -292,80 +354,117 @@ class ResumeBuilder:
 
         self.bullet("AI Resume Analyzer \u00b7 Python/FastAPI app that analyzes resumes against job descriptions "
                      "using LLM-powered analysis. Live at resume.betamaxgroup.tech. "
-                     "GitHub: github.com/pioloavenido123-source/ai-resume-analyzer")
+                     "GitHub: github.com/pioloavenido123-source/ai-resume-analyzer",
+                     bold_prefix="AI Resume Analyzer")
         self.bullet("AI Document Q&A (RAG) \u00b7 Upload any PDF and ask questions with source citations. Uses "
                      "sentence embeddings + vector search + deepseek-v4-flash. Live at docqa.betamaxgroup.tech. "
-                     "GitHub: github.com/pioloavenido123-source/ai-document-qa-rag")
+                     "GitHub: github.com/pioloavenido123-source/ai-document-qa-rag",
+                     bold_prefix="AI Document Q&A (RAG)")
         self.bullet("Lead Enrichment Pipeline \u00b7 Enter a company website, AI extracts business intelligence "
                      "(contact info, social links). Python/FastAPI + web scraping + LLM. Live at "
-                     "leads.betamaxgroup.tech. GitHub: github.com/pioloavenido123-source/ai-lead-enrichment-pipeline")
+                     "leads.betamaxgroup.tech. GitHub: github.com/pioloavenido123-source/ai-lead-enrichment-pipeline",
+                     bold_prefix="Lead Enrichment Pipeline")
         self.bullet("Sentiment Analysis Dashboard \u00b7 Paste reviews or feedback, AI classifies sentiment with "
                      "charts. Python/FastAPI + Chart.js + LLM. Live at sentiment.betamaxgroup.tech. "
-                     "GitHub: github.com/pioloavenido123-source/sentiment-analysis-dashboard")
+                     "GitHub: github.com/pioloavenido123-source/sentiment-analysis-dashboard",
+                     bold_prefix="Sentiment Analysis Dashboard")
         self.bullet("PioloBot Chatbot \u00b7 AI chatbot embedded on portfolio website with conversation memory, "
                      "session persistence, and natural language responses. Python + LLM. Live at "
-                     "piolo.betamaxgroup.tech. GitHub: github.com/pioloavenido123-source/piolo-portfolio")
+                     "piolo.betamaxgroup.tech. GitHub: github.com/pioloavenido123-source/piolo-portfolio",
+                     bold_prefix="PioloBot Chatbot")
 
         self.y += 4
         self.sub_label("Collaborative Projects:")
-        self.bullet("Zimmy POS \u00b7 Point-of-sale system for food businesses (React, Node.js, PostgreSQL)")
-        self.bullet("n8n Workflow Automations \u00b7 Marketing-centric workflow automations using n8n and GHL at Relaytask")
-        self.bullet("Relay Task \u00b7 Task management and HOA management platform")
-        self.bullet("Deskline.co \u00b7 Web platform built with WordPress and GHL")
+        self.bullet("Zimmy POS \u00b7 Point-of-sale system for food businesses (React, Node.js, PostgreSQL)",
+                     bold_prefix="Zimmy POS")
+        self.bullet("n8n Workflow Automations \u00b7 Marketing-centric workflow automations using n8n and GHL at Relaytask",
+                     bold_prefix="n8n Workflow Automations")
+        self.bullet("Relay Task \u00b7 Task management and HOA management platform",
+                     bold_prefix="Relay Task")
+        self.bullet("Deskline.co \u00b7 Web platform built with WordPress and GHL",
+                     bold_prefix="Deskline.co")
         self.y += 4
 
     def _skills(self):
         self.section_header("SKILLS AND ABILITIES")
         self.sub_label("Technical Skills")
-        self.bullet("Programming Languages: Python, JavaScript, C++, Java, PHP")
+        self.bullet("Programming Languages: Python, JavaScript, C++, Java, PHP",
+                     bold_prefix="Programming Languages:")
         self.bullet("AI/ML: LLM Integration (Ollama, OpenAI-compatible APIs), Prompt Engineering, "
-                     "RAG (Retrieval-Augmented Generation), Embeddings & Vector Search, Sentiment Analysis")
-        self.bullet("AI Tools: Claude, ChatGPT, Hermes Agent, Ollama")
-        self.bullet("Backend Development: FastAPI, Node.js, REST API design")
-        self.bullet("Frontend Development: HTML/CSS, React, Progressive Web Apps")
-        self.bullet("Deployment & Infrastructure: Docker, Caddy reverse proxy, Cloudflare, Linux server administration")
-        self.bullet("Automation: n8n workflow automation, Go High Level (GHL) automation, lead enrichment pipelines")
-        self.bullet("Web Development: WordPress, GHL web funnels, SEO-focused landing pages")
-        self.bullet("Data Analytics: Data cleaning, sorting, analysis, and visualization")
-        self.bullet("Database: SQL")
-        self.bullet("Tools: Google Workspace, Canva, Git/GitHub")
+                     "RAG (Retrieval-Augmented Generation), Embeddings & Vector Search, Sentiment Analysis",
+                     bold_prefix="AI/ML:")
+        self.bullet("AI Tools: Claude, ChatGPT, Hermes Agent, Ollama",
+                     bold_prefix="AI Tools:")
+        self.bullet("Backend Development: FastAPI, Node.js, REST API design",
+                     bold_prefix="Backend Development:")
+        self.bullet("Frontend Development: HTML/CSS, React, Progressive Web Apps",
+                     bold_prefix="Frontend Development:")
+        self.bullet("Deployment & Infrastructure: Docker, Caddy reverse proxy, Cloudflare, Linux server administration",
+                     bold_prefix="Deployment & Infrastructure:")
+        self.bullet("Automation: n8n workflow automation, Go High Level (GHL) automation, lead enrichment pipelines",
+                     bold_prefix="Automation:")
+        self.bullet("Web Development: WordPress, GHL web funnels, SEO-focused landing pages",
+                     bold_prefix="Web Development:")
+        self.bullet("Data Analytics: Data cleaning, sorting, analysis, and visualization",
+                     bold_prefix="Data Analytics:")
+        self.bullet("Database: SQL",
+                     bold_prefix="Database:")
+        self.bullet("Tools: Google Workspace, Canva, Git/GitHub",
+                     bold_prefix="Tools:")
         self.y += 4
 
         self.sub_label("Personal Skills")
         self.bullet("Communication skills (written and verbal) \u00b7 Awarded English Immersive Environment; "
-                     "written communications to organizations and university officials")
+                     "written communications to organizations and university officials",
+                     bold_prefix="Communication skills (written and verbal)")
         self.bullet("Leadership skills \u00b7 Spearheaded and assisted projects at the university and "
                      "extracurricular activities; served as Manager on group thesis \"Web-Based POS System "
-                     "for Local Cafe Shop in Naga City\"")
+                     "for Local Cafe Shop in Naga City\"",
+                     bold_prefix="Leadership skills")
         self.bullet("Project management \u00b7 Led a team developing a Progressive Web App for cafe business "
-                     "owners with features for sales tracking, inventory management, and customer service")
+                     "owners with features for sales tracking, inventory management, and customer service",
+                     bold_prefix="Project management")
         self.bullet("Good work ethic \u00b7 Respectful, accountable, strong time management balancing personal, "
-                     "academic, and professional responsibilities")
+                     "academic, and professional responsibilities",
+                     bold_prefix="Good work ethic")
         self.y += 4
 
     def _certifications(self):
         self.section_header("TRAINING / CERTIFICATION / LICENSE")
-        self.bullet("Introduction to Cybersecurity \u00b7 Cisco, 19 Dec 2024")
-        self.bullet("Learning SQL Programming \u00b7 LinkedIn Learning, 2023")
-        self.bullet("React Essential Training \u00b7 LinkedIn Learning, 2025")
-        self.bullet("React: Building Progressive Web Apps (PWAs) \u00b7 LinkedIn Learning, 2025")
-        self.bullet("Node.js Essential Training \u00b7 LinkedIn Learning, 2025")
-        self.bullet("Administrative Professional Foundations \u00b7 LinkedIn Learning, 2025")
-        self.bullet("Git Essential Training (2023) \u00b7 LinkedIn Learning, 2025")
+        self.bullet("Introduction to Cybersecurity \u00b7 Cisco, 19 Dec 2024",
+                     bold_prefix="Introduction to Cybersecurity")
+        self.bullet("Learning SQL Programming \u00b7 LinkedIn Learning, 2023",
+                     bold_prefix="Learning SQL Programming")
+        self.bullet("React Essential Training \u00b7 LinkedIn Learning, 2025",
+                     bold_prefix="React Essential Training")
+        self.bullet("React: Building Progressive Web Apps (PWAs) \u00b7 LinkedIn Learning, 2025",
+                     bold_prefix="React: Building Progressive Web Apps (PWAs)")
+        self.bullet("Node.js Essential Training \u00b7 LinkedIn Learning, 2025",
+                     bold_prefix="Node.js Essential Training")
+        self.bullet("Administrative Professional Foundations \u00b7 LinkedIn Learning, 2025",
+                     bold_prefix="Administrative Professional Foundations")
+        self.bullet("Git Essential Training (2023) \u00b7 LinkedIn Learning, 2025",
+                     bold_prefix="Git Essential Training (2023)")
         self.y += 4
 
     def _awards(self):
         self.section_header("AWARDS")
-        self.bullet("English for Immersive Environment (EIE) Department Representative \u00b7 University of Nueva C\u00e1ceres, 2020\u20132021")
-        self.bullet("English for Immersive Environment (EIE) Student Assistant \u00b7 University of Nueva C\u00e1ceres, 2020\u20132021")
-        self.bullet("Certificate of Recognition \u00b7 Relaytask, 2025")
+        self.bullet("English for Immersive Environment (EIE) Department Representative \u00b7 University of Nueva C\u00e1ceres, 2020\u20132021",
+                     bold_prefix="English for Immersive Environment (EIE) Department Representative")
+        self.bullet("English for Immersive Environment (EIE) Student Assistant \u00b7 University of Nueva C\u00e1ceres, 2020\u20132021",
+                     bold_prefix="English for Immersive Environment (EIE) Student Assistant")
+        self.bullet("Certificate of Recognition \u00b7 Relaytask, 2025",
+                     bold_prefix="Certificate of Recognition")
         self.y += 4
 
     def _references(self):
         self.section_header("REFERENCES")
-        self.bullet("Faith Villamor \u00b7 Registrar Clerk, University of Nueva Caceres \u00b7 09511644059 / villamorfaith@gmail.com")
-        self.bullet("Mark Alfonso A. Cervantes \u00b7 Software Developer, Somisomi Franchise Ltd. \u00b7 0936 598 9544 / cmarkalfonso@yahoo.com")
-        self.bullet("Samantha Espinas \u00b7 Network Engineer, Accenture \u00b7 09933075331")
+        self.bullet("Faith Villamor \u00b7 Registrar Clerk, University of Nueva Caceres \u00b7 09511644059 / villamorfaith@gmail.com",
+                     bold_prefix="Faith Villamor")
+        self.bullet("Mark Alfonso A. Cervantes \u00b7 Software Developer, Somisomi Franchise Ltd. \u00b7 0936 598 9544 / cmarkalfonso@yahoo.com",
+                     bold_prefix="Mark Alfonso A. Cervantes")
+        self.bullet("Samantha Espinas \u00b7 Network Engineer, Accenture \u00b7 09933075331",
+                     bold_prefix="Samantha Espinas")
         self.y += 8
 
     def _footer(self):
