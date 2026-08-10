@@ -165,7 +165,7 @@ class ResumeBuilder:
     def _header(self):
         self._put(MARGIN_L, self.y + SIZE_NAME, "PIOLO RAFAEL AVENIDO", True, SIZE_NAME, COLOR_NAME)
         self.y += SIZE_NAME + 8
-        contact = "piolo.avenido123@gmail.com  |  09186813030  |  LinkedIn  |  GitHub  |  Portfolio"
+        contact = "piolo.avenido123@gmail.com  |  09186813030  |  09919542477  |  LinkedIn  |  GitHub  |  Portfolio"
         self._put(MARGIN_L, self.y + SIZE_CONTACT, contact, False, SIZE_CONTACT, COLOR_BODY)
         self.y += SIZE_CONTACT + 5
         self._put(MARGIN_L, self.y + SIZE_CONTACT, "Barangay San Francisco, Magarao, Camarines Sur, 4403, Philippines", False, SIZE_CONTACT, COLOR_BODY)
