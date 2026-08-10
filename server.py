@@ -14,9 +14,14 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 # --- Conversation memory store ---
 # Maps session_id → { "messages": [...], "last_active": timestamp }
 MAX_HISTORY = 10          # max messages per session sent to LLM (keeps token usage low)
-SESSION_TTL = 1800       # 30 minutes of inactivity → session expires
+SESSION_TTL = 86400      # 24 hours of inactivity → session expires
 _conversations = {}
 _conv_lock = threading.Lock()
+
+# --- Feedback store ---
+# Maps session_id → list of { "message": "...", "rating": "up"|"down", "ts": ... }
+_feedback = {}
+_feedback_lock = threading.Lock()
 
 
 def _prune_expired_sessions():
@@ -60,7 +65,7 @@ ABOUT PIOLO:
 
 SKILLS:
 - Programming: Python, FastAPI, JavaScript, React, Next.js, SQL, MySQL, HTML/CSS, C++, Java, PHP
-- Automation & AI: LLM Integration, Prompt Engineering, RAG (Retrieval-Augmented Generation), Embeddings & Vector Search, n8n Automation, Workflow Automation, Docker & Deployment
+- Automation & AI: LLM Integration, Prompt Engineering, Claude & Anthropic Platform, Claude Code (CLI), RAG (Retrieval-Augmented Generation), Embeddings & Vector Search, n8n Automation, Workflow Automation, Docker & Deployment
 - Web & CRM: WordPress (Elementor), WordPress (WP Bakery), GHL Funnel Building, Salesforce Administration, Caddy & Cloudflare
 
 PROJECTS:
@@ -84,6 +89,9 @@ EXPERIENCE:
 - Website Designer/Developer at Relaytask, 2025 — designed and implemented websites using WordPress and GHL, built funnel websites for lead generation, monitored page views and uptime
 
 CERTIFICATIONS:
+- Claude 101 (Anthropic, August 2026)
+- Claude Code 101 (Anthropic, August 2026)
+- Claude Platform 101 (Anthropic, August 2026)
 - Introduction to Cybersecurity (Dec 2024)
 - Learning SQL Programming (LinkedIn Learning, 2023)
 - React Essential Training (LinkedIn Learning, 2025)
@@ -151,6 +159,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.handle_contact()
         elif self.path == "/chat":
             self.handle_chat()
+        elif self.path == "/feedback":
+            self.handle_feedback()
         else:
             self.send_error(404)
 
@@ -217,6 +227,37 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_json(200, {"reply": reply})
         except Exception as e:
             self.send_json(500, {"error": "I couldn't process that right now. Please try again or contact Piolo directly at piolo.avenido123@gmail.com."})
+
+    def handle_feedback(self):
+        content_length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_length).decode("utf-8")
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self.send_json(400, {"error": "Invalid JSON."})
+            return
+
+        session_id = data.get("session_id", "").strip()
+        rating = data.get("rating", "").strip()
+        message = data.get("message", "").strip()
+
+        if not session_id or len(session_id) > 128:
+            self.send_json(400, {"error": "Valid session_id is required."})
+            return
+        if rating not in ("up", "down"):
+            self.send_json(400, {"error": "Rating must be 'up' or 'down'."})
+            return
+
+        with _feedback_lock:
+            if session_id not in _feedback:
+                _feedback[session_id] = []
+            _feedback[session_id].append({
+                "message": message[:500],
+                "rating": rating,
+                "ts": time.time()
+            })
+
+        self.send_json(200, {"status": "ok"})
 
     def handle_contact(self):
         content_length = int(self.headers.get("Content-Length", 0))

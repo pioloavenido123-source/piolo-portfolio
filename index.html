@@ -402,6 +402,23 @@ section { padding: 3.5rem 0; }
 }
 .cert-link:hover { color: var(--primary); }
 .cert-link svg { width: 20px; height: 20px; fill: currentColor; }
+.cert-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;
+  margin-bottom: 1.5rem; text-align: left;
+}
+.cert-item {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1rem 1.25rem; transition: border-color 0.2s, transform 0.2s;
+}
+.cert-item:hover { border-color: var(--primary); transform: translateY(-2px); }
+.cert-badge {
+  display: inline-block; font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--accent); background: var(--surface-solid);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.6rem; border-radius: 99px; margin-bottom: 0.5rem;
+}
+.cert-name { font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
+.cert-date { font-size: 0.8rem; color: var(--text-muted); }
 
 /* ===== CONTACT FORM ===== */
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; }
@@ -418,6 +435,26 @@ section { padding: 3.5rem 0; }
 }
 .contact-method:hover { border-color: var(--accent); background: rgba(6, 182, 212, 0.08); transform: translateY(-2px); }
 .contact-method svg { width: 22px; height: 22px; fill: currentColor; }
+
+.contact-certs {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem 1.5rem; margin-top: 0.5rem;
+}
+.contact-certs h4 {
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--accent); margin-bottom: 0.5rem;
+}
+.contact-certs ul { list-style: none; padding: 0; margin: 0; }
+.contact-certs li {
+  font-size: 0.9rem; color: var(--text); padding: 0.25rem 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.contact-certs .cert-org {
+  font-weight: 600; color: var(--accent); font-size: 0.8rem;
+  text-transform: uppercase; letter-spacing: 0.03em;
+}
+.contact-certs em { color: var(--text-muted); font-style: normal; font-size: 0.8rem; }
 
 .contact-form {
   background: var(--surface); backdrop-filter: blur(16px);
@@ -560,6 +597,17 @@ footer p a { color: var(--accent); text-decoration: none; }
 .chat-msg a { color: var(--accent); text-decoration: underline; font-weight: 500; }
 .chat-msg a:hover { text-decoration: none; opacity: 0.8; }
 
+/* Feedback buttons (thumbs up/down) */
+.chat-feedback { display: flex; gap: 0.3rem; margin-top: 0.4rem; padding-top: 0.3rem; border-top: 1px solid var(--border); }
+.chat-feedback button {
+  background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--text-dim);
+  padding: 2px 6px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 2px;
+}
+.chat-feedback button:hover { background: var(--surface); color: var(--text); }
+.chat-feedback button.rated-up { color: #34A853; }
+.chat-feedback button.rated-down { color: #EA4335; }
+.chat-feedback .feedback-label { font-size: 0.7rem; color: var(--text-dim); margin-left: auto; }
+
 .chatbot-suggestions { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0 1.25rem 0.75rem; background: var(--bg); }
 .suggestion-chip {
   background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
@@ -644,7 +692,7 @@ footer p a { color: var(--accent); text-decoration: none; }
         <div class="hero-ctas reveal">
           <a href="#projects" class="btn-primary">View My Work</a>
           <a href="#contact" class="btn-secondary">Get in Touch</a>
-          <a href="resume.pdf?v=3" class="btn-secondary" download>Download Resume</a>
+          <a href="resume.pdf?v=4" class="btn-secondary" download>Download Resume</a>
         </div>
       </div>
       <div class="hero-photo-wrap reveal">
@@ -664,7 +712,7 @@ footer p a { color: var(--accent); text-decoration: none; }
         <div class="label">Years Experience</div>
       </div>
       <div class="stat-box">
-        <div class="num" data-count="10" data-suffix="+">0</div>
+        <div class="num" data-count="13" data-suffix="+">0</div>
         <div class="label">Certifications</div>
       </div>
       <div class="stat-box">
@@ -771,6 +819,8 @@ footer p a { color: var(--accent); text-decoration: none; }
         <div class="skill-tags">
           <span class="skill-tag">LLM Integration</span>
           <span class="skill-tag">Prompt Engineering</span>
+          <span class="skill-tag">Claude &amp; Anthropic Platform</span>
+          <span class="skill-tag">Claude Code (CLI)</span>
           <span class="skill-tag">RAG (Retrieval-Augmented Generation)</span>
           <span class="skill-tag">Embeddings &amp; Vector Search</span>
           <span class="skill-tag">n8n Automation</span>
@@ -1022,9 +1072,50 @@ footer p a { color: var(--accent); text-decoration: none; }
 
     <div class="cert-banner reveal">
       <h3>Certifications</h3>
-      <p>I hold multiple professional certifications across AI, automation, and development &mdash; all viewable on my LinkedIn profile.</p>
+      <div class="cert-grid">
+        <div class="cert-item">
+          <div class="cert-badge">Anthropic</div>
+          <div class="cert-name">Claude 101</div>
+          <div class="cert-date">August 2026</div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-badge">Anthropic</div>
+          <div class="cert-name">Claude Code 101</div>
+          <div class="cert-date">August 2026</div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-badge">Anthropic</div>
+          <div class="cert-name">Claude Platform 101</div>
+          <div class="cert-date">August 2026</div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-badge">Cisco</div>
+          <div class="cert-name">Introduction to Cybersecurity</div>
+          <div class="cert-date">December 2024</div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-badge">LinkedIn Learning</div>
+          <div class="cert-name">React Essential Training</div>
+          <div class="cert-date">2025</div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-badge">LinkedIn Learning</div>
+          <div class="cert-name">Node.js Essential Training</div>
+          <div class="cert-date">2025</div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-badge">LinkedIn Learning</div>
+          <div class="cert-name">Git Essential Training</div>
+          <div class="cert-date">2025</div>
+        </div>
+        <div class="cert-item">
+          <div class="cert-badge">LinkedIn Learning</div>
+          <div class="cert-name">Learning SQL Programming</div>
+          <div class="cert-date">2023</div>
+        </div>
+      </div>
       <a href="https://www.linkedin.com/in/piolo-rafael-avenido-3324333b3/" class="cert-link" target="_blank" rel="noopener">
-        View Certifications on LinkedIn
+        View All Certifications on LinkedIn
         <svg viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
       </a>
     </div>
@@ -1050,6 +1141,14 @@ footer p a { color: var(--accent); text-decoration: none; }
             <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68zm1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
             LinkedIn Profile
           </a>
+          <div class="contact-certs">
+            <h4>Latest Certifications</h4>
+            <ul>
+              <li><span class="cert-org">Anthropic</span> &mdash; Claude 101 <em>Aug 2026</em></li>
+              <li><span class="cert-org">Anthropic</span> &mdash; Claude Code 101 <em>Aug 2026</em></li>
+              <li><span class="cert-org">Anthropic</span> &mdash; Claude Platform 101 <em>Aug 2026</em></li>
+            </ul>
+          </div>
           <a href="https://github.com/pioloavenido123-source" class="contact-method" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
             GitHub Profile
@@ -1490,7 +1589,53 @@ form.addEventListener('submit', async (e) => {
     requestAnimationFrame(() => {
       msgEl.style.opacity = '1';
     });
+    // Add thumbs up/down feedback buttons to bot replies
+    addFeedbackButtons(msgEl, text);
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  }
+
+  function addFeedbackButtons(msgEl, message) {
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.className = 'chat-feedback';
+    feedbackDiv.innerHTML = `
+      <button class="fb-up" title="Helpful">👍</button>
+      <button class="fb-down" title="Not helpful">👎</button>
+      <span class="feedback-label">Was this helpful?</span>
+    `;
+    const upBtn = feedbackDiv.querySelector('.fb-up');
+    const downBtn = feedbackDiv.querySelector('.fb-down');
+    const label = feedbackDiv.querySelector('.feedback-label');
+
+    upBtn.addEventListener('click', function() {
+      upBtn.classList.add('rated-up');
+      downBtn.classList.remove('rated-down');
+      downBtn.style.opacity = '0.4';
+      upBtn.style.opacity = '1';
+      label.textContent = 'Thanks for the feedback!';
+      sendFeedback(message, 'up');
+    });
+    downBtn.addEventListener('click', function() {
+      downBtn.classList.add('rated-down');
+      upBtn.classList.remove('rated-up');
+      upBtn.style.opacity = '0.4';
+      downBtn.style.opacity = '1';
+      label.textContent = 'Thanks for the feedback!';
+      sendFeedback(message, 'down');
+    });
+
+    msgEl.appendChild(feedbackDiv);
+  }
+
+  async function sendFeedback(message, rating) {
+    try {
+      await fetch('/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message, rating: rating, session_id: chatSessionId })
+      });
+    } catch (err) {
+      // Silent fail — feedback is best-effort, don't bother the user
+    }
   }
 
   function sendSuggestion(text) {
